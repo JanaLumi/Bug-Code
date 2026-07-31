@@ -196,6 +196,61 @@
       return commands;
     }
 
+    // --- Helper UI & Stepper Functions ---
+    function highlightGcodeLine(index) {
+      const textarea = document.getElementById('gcode');
+      if (!textarea) return;
+      const lines = textarea.value.split('\n');
+      if (index < 0 || index >= lines.length) return;
+
+      let start = 0;
+      for (let i = 0; i < index; i++) {
+        start += lines[i].length + 1; // +1 for newline
+      }
+      const end = start + lines[index].length;
+
+      textarea.focus();
+      textarea.setSelectionRange(start, end);
+    }
+
+    function redrawUpToLine(targetIndex) {
+      // Reset surface and state back to starting point
+      initWoodSurface();
+      state = { x: 20, y: 20, z: 5, feedRate: 300, isArc: false };
+
+      // Re-run animation queue silently up to targetIndex
+      const rawCode = document.getElementById('gcode').value;
+      const allCommands = parseGCode(rawCode);
+      const pastCommands = allCommands.slice(0, targetIndex + 1);
+
+      for (let cmd of pastCommands) {
+        const startX = state.x;
+        const startY = state.y;
+        
+        state.x = cmd.x;
+        state.y = cmd.y;
+        state.z = cmd.z;
+
+        if (state.z <= 0) {
+          woodCtx.beginPath();
+          const depthAlpha = Math.min(1, Math.abs(state.z) / 8);
+          woodCtx.strokeStyle = `rgb(${210 - depthAlpha*150}, ${160 - depthAlpha*130}, ${110 - depthAlpha*100})`;
+          woodCtx.lineWidth = 6 + Math.abs(state.z) * 1.5;
+          woodCtx.lineCap = 'round';
+          woodCtx.moveTo(startX, startY);
+          woodCtx.lineTo(state.x, state.y);
+          woodCtx.stroke();
+        }
+      }
+      renderScene(0);
+    }
+
+    function runAnimationLoop() {
+      if (!isPaused && isRunning) {
+        runNextCommand();
+      }
+    }
+
     function stepForward() {
       if (currentLineIndex < gcodeLines.length - 1) {
         currentLineIndex++;
