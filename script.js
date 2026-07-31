@@ -141,6 +141,10 @@
 
     // Reset background wood texture
     function initWoodSurface() {
+      // Apply coordinate system as it is in the CNC machines (0,0 at bottom-left)
+      woodCtx.translate(0, woodCanvas.height);
+      woodCtx.scale(1, -1);
+      
       // Bark Layer
       woodCtx.fillStyle = '#4a3324';
       woodCtx.fillRect(0, 0, woodCanvas.width, woodCanvas.height);
