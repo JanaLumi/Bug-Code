@@ -20,8 +20,8 @@
     };
 
  //   let animationQueue = [];
-    let gcodeLines = [];
-    let currentLineIndex = 0;
+    let parsedCommands = [];
+    let currentCommandIndex = 0;
     let isPaused = false;
     let isRunning = false;
 
@@ -134,8 +134,11 @@
     function initWoodSurface() {
       // Reset matrix then apply coordinate system (0,0 at bottom-left)
       woodCtx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.translate(0, canvas.height);
+      ctx.scale(1, -1);
       
       // Apply coordinate system as it is in the CNC machines (0,0 at bottom-left)
+      woodCtx.setTransform(1, 0, 0, 1, 0, 0);
       woodCtx.translate(0, woodCanvas.height);
       woodCtx.scale(1, -1);
       
@@ -297,9 +300,7 @@
         return;
       }
 
-      const target = animationQueue.shift();
-      currentLineIndex++;
-      if (typeof updateUI === 'function') updateUI();
+      const target = parsedCommands[currentCommandIndex];
       
       const startX = state.x;
       const startY = state.y;
@@ -388,7 +389,7 @@
         prevY = state.y;
 
         // Calculate true heading angle in flipped Y space
-        const headingAngle = Math.atan2(-dy, dx);
+        const headingAngle = Math.atan2(dy, dx);
         renderScene(headingAngle);
 
         if (step < steps) {
@@ -411,14 +412,14 @@
       // 2. Draw Beetle Sprite
       ctx.save();
       ctx.translate(state.x, state.y);
-      ctx.scale(1, -1);
+  //    ctx.scale(1, -1);
 
+      // Rotate towards movement direction
+      ctx.rotate(headingAngle - Math.PI / 2);
+      
       // Scale sprite based on Z height (higher Z = beetle flies closer to camera)
       const scale = 1 + Math.max(0, state.z) * 0.05;
       ctx.scale(scale, scale);
-
-      // Rotate towards movement direction
-      ctx.rotate(headingAngle + Math.PI / 2);
 
       // Shadow if flying
       if (state.z > 0) {
