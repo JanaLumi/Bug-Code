@@ -68,6 +68,13 @@
       resize: none;
       line-height: 1.4;
     }
+
+    /* Add to your style.css */
+    .gcode-line.active {
+      background-color: #ffe066;
+      color: #000;
+      font-weight: bold;
+    }
     .controls {
       display: flex;
       gap: 8px;
