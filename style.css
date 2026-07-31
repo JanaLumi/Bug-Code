@@ -28,6 +28,30 @@
     #editor-panel {
       width: 340px;
     }
+
+    .preset-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    
+    .btn-preset {
+      background: #3d3730;
+      color: #e6dfd5;
+      border: 1px solid #524a41;
+      padding: 6px 8px;
+      font-size: 11px;
+      border-radius: 4px;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.15s ease;
+    }
+    
+    .btn-preset:hover {
+      background: #4a8c5e;
+      color: #ffffff;
+    }
     textarea {
       flex: 1;
       background: #141210;
