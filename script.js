@@ -461,15 +461,6 @@
       }
     });
 
-    const btnStepForward = document.getElementById('btnStepForward');
-    if (btnStepForward) btnStepForward.addEventListener('click', stepForward);
-
-    const btnStepBackward = document.getElementById('btnStepBackward');
-    if (btnStepBackward) btnStepBackward.addEventListener('click', stepBackward);
-
-    const btnPlayPause = document.getElementById('btnPlayPause');
-    if (btnPlayPause) btnPlayPause.addEventListener('click', togglePlayPause);
-
     document.getElementById('reset').addEventListener('click', () => {
       isRunning = false;
       animationQueue = [];
