@@ -5,6 +5,7 @@
       --accent: #4a8c5e;
       --border: #3d3730;
     }
+
     body {
       margin: 0;
       padding: 20px;
@@ -16,6 +17,7 @@
       height: calc(100vh - 40px);
       box-sizing: border-box;
     }
+
     .panel {
       background: var(--panel);
       border: 1px solid var(--border);
@@ -25,6 +27,7 @@
       flex-direction: column;
       gap: 12px;
     }
+
     #editor-panel {
       width: 340px;
     }
@@ -40,11 +43,11 @@
       background: #3d3730;
       color: #e6dfd5;
       border: 1px solid #524a41;
-      padding: 6px 8px;
-      font-size: 11px;
-      border-radius: 4px;
+      padding: 8px 10px;
+      font-size: 14px;
+      border-radius: 10px;
       cursor: pointer;
-      text-align: left;
+      text-align: center;
       transition: background 0.15s ease;
     }
     
@@ -52,6 +55,7 @@
       background: #4a8c5e;
       color: #ffffff;
     }
+
     textarea {
       flex: 1;
       background: #141210;
