@@ -1,0 +1,81 @@
+    :root {
+      --bg: #1a1816;
+      --panel: #2a2622;
+      --text: #e6dfd5;
+      --accent: #4a8c5e;
+      --border: #3d3730;
+    }
+    body {
+      margin: 0;
+      padding: 20px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;
+      gap: 20px;
+      height: calc(100vh - 40px);
+      box-sizing: border-box;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    #editor-panel {
+      width: 340px;
+    }
+    textarea {
+      flex: 1;
+      background: #141210;
+      color: #9cdcf0;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 13px;
+      resize: none;
+      line-height: 1.4;
+    }
+    .controls {
+      display: flex;
+      gap: 8px;
+    }
+    button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      background: var(--accent);
+      color: white;
+      transition: opacity 0.2s;
+    }
+    button:hover { opacity: 0.9; }
+    button#reset { background: #8c4a4a; }
+    #view-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    canvas {
+      border: 2px solid var(--border);
+      border-radius: 4px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      background: #3a271d; /* Outer bark color */
+    }
+    .telemetry {
+      font-family: monospace;
+      font-size: 12px;
+      color: #aaa;
+      display: flex;
+      gap: 16px;
+    }
+    .telemetry span { color: #fff; }
