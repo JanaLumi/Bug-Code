@@ -353,7 +353,7 @@
       ctx.scale(scale, scale);
 
       // Rotate towards movement direction
-      ctx.rotate(headingAngle + Math.PI / 2);
+      ctx.rotate(-headingAngle - Math.PI / 2);
 
       // Shadow if flying
       if (state.z > 0) {
