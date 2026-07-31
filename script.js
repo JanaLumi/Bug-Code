@@ -194,6 +194,32 @@
         state.y = startY + dy * progress;
         state.z = startZ + dz * progress;
 
+        // Linear vs Circular Interpolation (G02 / G03)
+        if (target.type === 'G02' || target.type === 'G03') {
+          const centerX = startX + target.i;
+          const centerY = startY + target.j;
+          const radius = Math.hypot(target.i, target.j);
+          
+          let startAngle = Math.atan2(startY - centerY, startX - centerX);
+          let endAngle = Math.atan2(target.y - centerY, target.x - centerX);
+          
+          let sweep = endAngle - startAngle;
+          if (target.type === 'G02') { // Clockwise
+            if (sweep >= 0) sweep -= 2 * Math.PI;
+          } else { // G03 Counter-Clockwise
+            if (sweep <= 0) sweep += 2 * Math.PI;
+          }
+          
+          const currentAngle = startAngle + sweep * progress;
+          state.x = centerX + radius * Math.cos(currentAngle);
+          state.y = centerY + radius * Math.sin(currentAngle);
+        } else {
+          // Standard Linear Interpolation (G00 / G01)
+          state.x = startX + dx * progress;
+          state.y = startY + dy * progress;
+        }
+        state.z = startZ + dz * progress;
+
         // Update UI counters
         teleX.textContent = state.x.toFixed(2);
         teleY.textContent = state.y.toFixed(2);
