@@ -141,6 +141,9 @@
 
     // Reset background wood texture
     function initWoodSurface() {
+      // Reset matrix then apply coordinate system (0,0 at bottom-left)
+      woodCtx.setTransform(1, 0, 0, 1, 0, 0);
+      
       // Apply coordinate system as it is in the CNC machines (0,0 at bottom-left)
       woodCtx.translate(0, woodCanvas.height);
       woodCtx.scale(1, -1);
@@ -200,6 +203,39 @@
         }
       }
       return commands;
+    }
+
+    function stepForward() {
+      if (currentLineIndex < gcodeLines.length - 1) {
+        currentLineIndex++;
+        executeLine(gcodeLines[currentLineIndex]);
+        updateUI();
+      }
+    }
+    
+    function stepBackward() {
+      if (currentLineIndex > 0) {
+        currentLineIndex--;
+        // Rewind state: re-render canvas up to currentLineIndex
+        redrawUpToLine(currentLineIndex);
+        updateUI();
+      }
+    }
+    
+    function togglePlayPause() {
+      isPaused = !isPaused;
+      const btn = document.getElementById('btnPlayPause');
+      btn.textContent = isPaused ? '▶ Play' : '⏸ Pause';
+      if (!isPaused) runAnimationLoop();
+    }
+    
+    function updateUI() {
+      // Update line counter text
+      document.getElementById('lineIndicator').textContent = 
+        `Line: ${currentLineIndex + 1} / ${gcodeLines.length}`;
+        
+      // Highlight active line in editor
+      highlightGcodeLine(currentLineIndex);
     }
 
     // Execute step-by-step animation
