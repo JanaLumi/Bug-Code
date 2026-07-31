@@ -50,7 +50,7 @@
     G01 X250 Y50       ; Move diagonally down-right
     
     G00 Z5             ; Lift up`,
-    ====
+
       diagonal: `; Step 2: Diagonal Spiral
     ; Combining X and Y movement at the same time creates smooth diagonal steps that form a spiral!
     
