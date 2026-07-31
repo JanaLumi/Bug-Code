@@ -133,7 +133,7 @@
     // Reset background wood texture
     function initWoodSurface() {
       // Reset matrix then apply coordinate system (0,0 at bottom-left)
-      woodCtx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.translate(0, canvas.height);
       ctx.scale(1, -1);
       
@@ -261,13 +261,15 @@
       }
       
       if (currentCommandIndex < parsedCommands.length) {
+        isRunning = true;
+        isPaused = true; // Advance single step while keeping paused
         runNextCommand();
       }
     }
     
     function stepBackward() {
-      if (currentLineIndex > 0) {
-        currentLineIndex--;
+      if (currentCommandIndex > 0) {
+        currentCommandIndex--;
         // Rewind state: re-render canvas up to currentLineIndex
         redrawUpToLine(currentCommandIndex);
         updateUI();
@@ -275,10 +277,19 @@
     }
     
     function togglePlayPause() {
+      if (parsedCommands.length === 0) {
+        const code = document.getElementById('gcode').value;
+        parsedCommands = parseGCode(code);
+      }
+      
       isPaused = !isPaused;
       const btn = document.getElementById('btnPlayPause');
       btn.textContent = isPaused ? '▶ Play' : '⏸ Pause';
-      if (!isPaused) runAnimationLoop();
+      
+      if (!isPaused) {
+        isRunning = true;
+        runNextCommand();
+      }
     }
     
     function updateUI() {
@@ -397,7 +408,11 @@
         } else {
           currentCommandIndex++;
           updateUI();
-          runNextCommand();
+          if (!isPaused && isRunning) {
+            runNextCommand();
+          } else {
+            isRunning = false;
+          }
         }
       }
 
@@ -407,6 +422,7 @@
     // Render the main canvas view
     function renderScene(headingAngle = 0) {
       // 1. Draw carved wood layer
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(woodCanvas, 0, 0);
 
       // 2. Draw Beetle Sprite
@@ -415,7 +431,7 @@
   //    ctx.scale(1, -1);
 
       // Rotate towards movement direction
-      ctx.rotate(headingAngle - Math.PI / 2);
+      ctx.rotate(headingAngle + Math.PI / 2);
       
       // Scale sprite based on Z height (higher Z = beetle flies closer to camera)
       const scale = 1 + Math.max(0, state.z) * 0.05;
