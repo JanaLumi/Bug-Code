@@ -19,7 +19,7 @@
       isArc: false
     };
 
-    let animationQueue = [];
+ //   let animationQueue = [];
     let gcodeLines = [];
     let currentLineIndex = 0;
     let isPaused = false;
@@ -286,7 +286,7 @@
 
     // Execute step-by-step animation
     function runNextCommand() {
-      if (animationQueue.length === 0) {
+      if (currentCommandIndex >= parsedCommands.length) {
         isRunning = false;
         return;
       }
@@ -381,11 +381,15 @@
         prevX = state.x;
         prevY = state.y;
 
-        renderScene(Math.atan2(dy, dx));
+        // Calculate true heading angle in flipped Y space
+        const headingAngle = Math.atan2(-dy, dx);
+        renderScene(headingAngle);
 
         if (step < steps) {
           requestAnimationFrame(animate);
         } else {
+          currentCommandIndex++;
+          updateUI();
           runNextCommand();
         }
       }
@@ -408,7 +412,7 @@
       ctx.scale(scale, scale);
 
       // Rotate towards movement direction
-      ctx.rotate(-headingAngle - Math.PI / 2);
+      ctx.rotate(headingAngle + Math.PI / 2);
 
       // Shadow if flying
       if (state.z > 0) {
@@ -446,14 +450,25 @@
 
     // Event Listeners
     document.getElementById('run').addEventListener('click', () => {
-      if (isRunning) return;
       const code = document.getElementById('gcode').value;
-      animationQueue = parseGCode(code);
-      if (animationQueue.length > 0) {
+      parsedCommands = parseGCode(code);
+      currentCommandIndex = 0;
+      initWoodSurface();
+      if (parsedCommands.length > 0) {
         isRunning = true;
+        isPaused = false;
         runNextCommand();
       }
     });
+
+    const btnStepForward = document.getElementById('btnStepForward');
+    if (btnStepForward) btnStepForward.addEventListener('click', stepForward);
+
+    const btnStepBackward = document.getElementById('btnStepBackward');
+    if (btnStepBackward) btnStepBackward.addEventListener('click', stepBackward);
+
+    const btnPlayPause = document.getElementById('btnPlayPause');
+    if (btnPlayPause) btnPlayPause.addEventListener('click', togglePlayPause);
 
     document.getElementById('reset').addEventListener('click', () => {
       isRunning = false;
