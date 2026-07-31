@@ -50,6 +50,25 @@
     G01 X250 Y50       ; Move diagonally down-right
     
     G00 Z5             ; Lift up`,
+    ====
+      diagonal: `; Step 2: Diagonal Spiral
+    ; Combining X and Y movement at the same time creates smooth diagonal steps that form a spiral!
+    
+    G00 X200 Y200 Z5   ; Fly to center
+    G01 Z-2 F200       ; Dig mandibles into wood
+    
+    ; Winding outward in diagonal steps
+    G01 X220 Y180 F400
+    G01 X240 Y220
+    G01 X180 Y240
+    G01 X160 Y160
+    G01 X260 Y140
+    G01 X280 Y260
+    G01 X140 Y280
+    G01 X120 Y120
+    G01 X300 Y100
+    
+    G00 Z5             ; Lift up and fly away!`,
     
       // Step 3: Arcs / Arches / Circles
       arcs: `; Step 3: Arcs & Arches
