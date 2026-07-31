@@ -20,6 +20,9 @@
     };
 
     let animationQueue = [];
+    let gcodeLines = [];
+    let currentLineIndex = 0;
+    let isPaused = false;
     let isRunning = false;
 
     const GCODE_PRESETS = {
@@ -60,18 +63,6 @@
     G00 Z5             ; Lift up and fly away!`,
     
       // Step 2: Diagonal lines
-      diagonal: `; Step 2: Diagonal Lines
-    ; Combining X and Y movement at the same time creates diagonals!
-    
-    G00 X50 Y50 Z5    ; Fly to start
-    G01 Z-2 F200      ; Dig in
-    
-    G01 X250 Y250 F400 ; Move diagonally up-right
-    G01 X50 Y250       ; Move straight left
-    G01 X250 Y50       ; Move diagonally down-right
-    
-    G00 Z5             ; Lift up`,
-
       diagonal: `; Step 2: Diagonal Spiral
     ; Combining X and Y movement at the same time creates smooth diagonal steps that form a spiral!
     
@@ -246,6 +237,9 @@
       }
 
       const target = animationQueue.shift();
+      currentLineIndex++;
+      if (typeof updateUI === 'function') updateUI();
+      
       const startX = state.x;
       const startY = state.y;
       const startZ = state.z;
@@ -264,6 +258,8 @@
       const speed = target.type === 'G00' ? 8 : (target.f / 60); // pixels per frame
       const steps = Math.max(1, Math.ceil(distance / speed));
       let step = 0;
+      let prevX = startX;
+      let prevY = startY;
 
       function animate() {
         step++;
@@ -315,16 +311,20 @@
           woodCtx.lineWidth = 12 + Math.abs(state.z); // deeper cuts look wider */
 
           // Scale depth across 0 to -8mm for a wider color range
- 					const depthAlpha = Math.min(1, Math.abs(state.z) / 8);
- 					// Fades from light sapwood (210, 160, 110) down to dark heartwood (60, 30, 10)
- 					woodCtx.strokeStyle = `rgb(${210 - depthAlpha*150}, ${160 - depthAlpha*130}, ${110 - depthAlpha*100})`;
- 					woodCtx.lineWidth = 6 + Math.abs(state.z) * 1.5; // Starts narrower at shallow depths
+          const depthAlpha = Math.min(1, Math.abs(state.z) / 8);
+          // Fades from light sapwood (210, 160, 110) down to dark heartwood (60, 30, 10)
+          woodCtx.strokeStyle = `rgb(${210 - depthAlpha*150}, ${160 - depthAlpha*130}, ${110 - depthAlpha*100})`;
+          woodCtx.lineWidth = 6 + Math.abs(state.z) * 1.5; // Starts narrower at shallow depths
 
           woodCtx.lineCap = 'round';
-          woodCtx.moveTo(startX + (dx * (step - 1) / steps), startY + (dy * (step - 1) / steps));
+          woodCtx.moveTo(prevX, prevY);
+       //   woodCtx.moveTo(startX + (dx * (step - 1) / steps), startY + (dy * (step - 1) / steps));
           woodCtx.lineTo(state.x, state.y);
           woodCtx.stroke();
         }
+
+        prevX = state.x;
+        prevY = state.y;
 
         renderScene(Math.atan2(dy, dx));
 
