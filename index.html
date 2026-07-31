@@ -44,6 +44,12 @@ G02 X200 Y100 I25 J25 F300
 
 G00 Z5            ; Retract safely
     </textarea>
+    <div class="stepper-controls">
+      <button id="btnPrev" onclick="stepBackward()">⏮ Prev Line</button>
+      <button id="btnPlayPause" onclick="togglePlayPause()">⏸▶ Play/Pause</button>
+      <button id="btnNext" onclick="stepForward()">Next Line ⏭</button>
+      <span id="lineIndicator">Line: 0 / 0</span>
+    </div>
     <div class="controls">
       <button id="run">▶ Run G-Code</button>
       <button id="reset">↺ Reset Bed</button>
