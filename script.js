@@ -346,6 +346,7 @@
       // 2. Draw Beetle Sprite
       ctx.save();
       ctx.translate(state.x, state.y);
+      ctx.scale(1, -1);
 
       // Scale sprite based on Z height (higher Z = beetle flies closer to camera)
       const scale = 1 + Math.max(0, state.z) * 0.05;
