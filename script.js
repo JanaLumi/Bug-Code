@@ -252,10 +252,13 @@
     }
 
     function stepForward() {
-      if (currentLineIndex < gcodeLines.length - 1) {
-        currentLineIndex++;
-        executeLine(gcodeLines[currentLineIndex]);
-        updateUI();
+      if (parsedCommands.length === 0) {
+        const code = document.getElementById('gcode').value;
+        parsedCommands = parseGCode(code);
+      }
+      
+      if (currentCommandIndex < parsedCommands.length) {
+        runNextCommand();
       }
     }
     
@@ -263,7 +266,7 @@
       if (currentLineIndex > 0) {
         currentLineIndex--;
         // Rewind state: re-render canvas up to currentLineIndex
-        redrawUpToLine(currentLineIndex);
+        redrawUpToLine(currentCommandIndex);
         updateUI();
       }
     }
@@ -276,12 +279,15 @@
     }
     
     function updateUI() {
+      const total = parsedCommands.length;
+      const current = total > 0 ? currentCommandIndex : 0;
+      
       // Update line counter text
       document.getElementById('lineIndicator').textContent = 
-        `Line: ${currentLineIndex + 1} / ${gcodeLines.length}`;
+        `Step: ${current} / ${total}`;
         
       // Highlight active line in editor
-      highlightGcodeLine(currentLineIndex);
+      highlightGcodeLine(currentCommandIndex);
     }
 
     // Execute step-by-step animation
