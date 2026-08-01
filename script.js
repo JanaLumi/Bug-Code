@@ -28,39 +28,39 @@
     const GCODE_PRESETS = {
       // Step 1: Straight horizontal and vertical lines
       straight: `; Step 1: Garden Path 
-    ; A space-filling fractal curve scaled up to span the whole garden bed!
-    
-    G00 X75 Y75 Z5     ; Fly to start (Bottom-Left)
-    G01 Z-2 F200       ; Dig mandibles into soil
-    
-    ; Level 2 Hilbert Curve (Scaled up to 525px)
-    G01 X75 Y188 F400  ; Up
-    G01 X188 Y188      ; Right
-    G01 X188 Y75       ; Down
-    
-    G01 X300 Y75       ; Right (cross to next quadrant)
-    
-    G01 X300 Y188      ; Up
-    G01 X413 Y188      ; Right
-    G01 X413 Y75       ; Down
-    
-    G01 X525 Y75       ; Right (cross to next quadrant)
-    
-    G01 X525 Y300      ; Up
-    G01 X413 Y300      ; Left
-    G01 X413 Y413      ; Up
-    G01 X525 Y413      ; Right
-    G01 X525 Y525      ; Up
-    G01 X300 Y525      ; Left
-    
-    G01 X300 Y413      ; Down
-    G01 X188 Y413      ; Left
-    G01 X188 Y525      ; Up
-    G01 X75 Y525       ; Left
-    G01 X75 Y300       ; Down
-    G01 X188 Y300      ; Right
-    
-    G00 Z5             ; Lift up and fly away!`,
+; A space-filling fractal curve scaled up to span the whole garden bed!
+
+G00 X75 Y75 Z5     ; Fly to start (Bottom-Left)
+G01 Z-2 F200       ; Dig mandibles into soil
+
+; Level 2 Hilbert Curve (Scaled up to 525px)
+G01 X75 Y188 F400  ; Up
+G01 X188 Y188      ; Right
+G01 X188 Y75       ; Down
+
+G01 X300 Y75       ; Right (cross to next quadrant)
+
+G01 X300 Y188      ; Up
+G01 X413 Y188      ; Right
+G01 X413 Y75       ; Down
+
+G01 X525 Y75       ; Right (cross to next quadrant)
+
+G01 X525 Y300      ; Up
+G01 X413 Y300      ; Left
+G01 X413 Y413      ; Up
+G01 X525 Y413      ; Right
+G01 X525 Y525      ; Up
+G01 X300 Y525      ; Left
+
+G01 X300 Y413      ; Down
+G01 X188 Y413      ; Left
+G01 X188 Y525      ; Up
+G01 X75 Y525       ; Left
+G01 X75 Y300       ; Down
+G01 X188 Y300      ; Right
+
+G00 Z5             ; Lift up and fly away!`,
     
       // Step 2: Diagonal lines
       diagonal: `; Step 2: Diagonal Spiral
