@@ -27,101 +27,96 @@ const canvas = document.getElementById('cncCanvas');
 
     const GCODE_PRESETS = {
       // Step 1: Straight horizontal and vertical lines
-      straight: `
-    ; Step 1: Garden Path 
-    ; A space-filling fractal curve scaled up to span the whole garden bed!
-    G00 X75 Y75 Z5     ; Fly to start (Bottom-Left)
-    G01 Z-2 F200       ; Dig mandibles into soil
-    
-    ; Level 2 Hilbert Curve (Scaled up to 525px)
-    G01 X75 Y188 F400  ; Up
-    G01 X188 Y188      ; Right
-    G01 X188 Y75       ; Down
-    
-    G01 X300 Y75       ; Right (cross to next quadrant)
-    
-    G01 X300 Y188      ; Up
-    G01 X413 Y188      ; Right
-    G01 X413 Y75       ; Down
-    
-    G01 X525 Y75       ; Right (cross to next quadrant)
-    
-    G01 X525 Y300      ; Up
-    G01 X413 Y300      ; Left
-    G01 X413 Y413      ; Up
-    G01 X525 Y413      ; Right
-    G01 X525 Y525      ; Up
-    G01 X300 Y525      ; Left
-    
-    G01 X300 Y413      ; Down
-    G01 X188 Y413      ; Left
-    G01 X188 Y525      ; Up
-    G01 X75 Y525       ; Left
-    G01 X75 Y300       ; Down
-    G01 X188 Y300      ; Right
-    
-    G00 Z5             ; Lift up and fly away!`,
+straight: `; Step 1: Garden Path 
+; A space-filling fractal curve scaled up to span the whole garden bed!
+G00 X75 Y75 Z5     ; Fly to start (Bottom-Left)
+G01 Z-2 F200       ; Dig mandibles into soil
+
+; Level 2 Hilbert Curve (Scaled up to 525px)
+G01 X75 Y188 F400  ; Up
+G01 X188 Y188      ; Right
+G01 X188 Y75       ; Down
+
+G01 X300 Y75       ; Right (cross to next quadrant)
+
+G01 X300 Y188      ; Up
+G01 X413 Y188      ; Right
+G01 X413 Y75       ; Down
+
+G01 X525 Y75       ; Right (cross to next quadrant)
+
+G01 X525 Y300      ; Up
+G01 X413 Y300      ; Left
+G01 X413 Y413      ; Up
+G01 X525 Y413      ; Right
+G01 X525 Y525      ; Up
+G01 X300 Y525      ; Left
+
+G01 X300 Y413      ; Down
+G01 X188 Y413      ; Left
+G01 X188 Y525      ; Up
+G01 X75 Y525       ; Left
+G01 X75 Y300       ; Down
+G01 X188 Y300      ; Right
+
+G00 Z5             ; Lift up and fly away!`,
     
       // Step 2: Diagonal lines
-      diagonal: `
-    ; Step 2: Diagonal Spiral
-    ; Combining X and Y movement at the same time creates smooth diagonal steps that form a spiral!
-    
-    G00 X200 Y200 Z5   ; Fly to center
-    G01 Z-2 F200       ; Dig mandibles into wood
-    
-    ; Winding outward in diagonal steps
-    G01 X220 Y180 F400
-    G01 X240 Y220
-    G01 X180 Y240
-    G01 X160 Y160
-    G01 X260 Y140
-    G01 X280 Y260
-    G01 X140 Y280
-    G01 X120 Y120
-    G01 X300 Y100
-    
-    G00 Z5             ; Lift up and fly away!`,
-    
-      // Step 3: Arcs / Arches / Circles
-      arcs: `
-    ; Step 3: Arcs & Arches
-    ; G02 = Clockwise Arc
-    ; G03 = Counter-Clockwise Arc
-    ; I and J tell the beetle where the center point of the arch is!
-    
-    G00 X100 Y100 Z5   ; Fly to start
-    G01 Z-2 F200       ; Dig in
-    
-    ; Cut an arch overhead (Clockwise curve to X200 Y100)
-    ; I=50 J=0 means the arch center is 50 units to the right
-    G02 X200 Y100 I50 J0 F300
-    
-    ; Cut a counter-clockwise curve (G03) back to start
-    G03 X100 Y100 I-50 J0 F300
-    
-    G00 Z5             ; Lift up`,
-    
+diagonal: `; Step 2: Diagonal Spiral
+; Combining X and Y movement at the same time creates smooth diagonal steps that form a spiral!
+
+G00 X200 Y200 Z5   ; Fly to center
+G01 Z-2 F200       ; Dig mandibles into wood
+
+; Winding outward in diagonal steps
+G01 X220 Y180 F400
+G01 X240 Y220
+G01 X180 Y240
+G01 X160 Y160
+G01 X260 Y140
+G01 X280 Y260
+G01 X140 Y280
+G01 X120 Y120
+G01 X300 Y100
+
+G00 Z5             ; Lift up and fly away!`,
+
+  // Step 3: Arcs / Arches / Circles
+arcs: `; Step 3: Arcs & Arches
+; G02 = Clockwise Arc
+; G03 = Counter-Clockwise Arc
+; I and J tell the beetle where the center point of the arch is!
+
+G00 X100 Y100 Z5   ; Fly to start
+G01 Z-2 F200       ; Dig in
+
+; Cut an arch overhead (Clockwise curve to X200 Y100)
+; I=50 J=0 means the arch center is 50 units to the right
+G02 X200 Y100 I50 J0 F300
+
+; Cut a counter-clockwise curve (G03) back to start
+G03 X100 Y100 I-50 J0 F300
+
+G00 Z5             ; Lift up`,
       // Step 4: Playing with Z-Depth (Variable Dark Brown Lines)
-      depth: `
-    ; Step 4: Z-Depth Digging
-    ; Notice how the line gets darker and wider as Z goes deeper!
-    
-    G00 X50 Y150 Z5   ; Fly to start
-    
-    ; Shallow cut (Light Brown)
-    G01 Z-1 F200      
-    G01 X150 Y150 F300
-    
-    ; Medium cut (Deeper Brown)
-    G01 Z-3
-    G01 X250 Y150
-    
-    ; Deep cut into heartwood (Very Dark Brown & Wide)
-    G01 Z-6
-    G01 X350 Y150
-    
-    G00 Z5            ; Retract safely`
+depth: `; Step 4: Z-Depth Digging
+; Notice how the line gets darker and wider as Z goes deeper!
+
+G00 X50 Y150 Z5   ; Fly to start
+
+; Shallow cut (Light Brown)
+G01 Z-1 F200      
+G01 X150 Y150 F300
+
+; Medium cut (Deeper Brown)
+G01 Z-3
+G01 X250 Y150
+
+; Deep cut into heartwood (Very Dark Brown & Wide)
+G01 Z-6
+G01 X350 Y150
+
+G00 Z5            ; Retract safely`
     };
     
     // Function to load presets into editor and auto-reset bed
