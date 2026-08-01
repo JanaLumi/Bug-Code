@@ -187,9 +187,9 @@
             if (val === 2) { cmd.type = 'G02'; lastGMode = 'G02'; }
             if (val === 3) { cmd.type = 'G03'; lastGMode = 'G03'; }
           }
-          if (letter === 'X') { cmd.x = val; moveFound = true; }
-          if (letter === 'Y') { cmd.y = val; moveFound = true; }
-          if (letter === 'Z') { cmd.z = val; moveFound = true; }
+          if (letter === 'X') { cmd.x = val; hasMotion = true; }
+          if (letter === 'Y') { cmd.y = val; hasMotion = true; }
+          if (letter === 'Z') { cmd.z = val; hasMotion = true; }
           if (letter === 'F') { cmd.f = val; currentF = val; }
           if (letter === 'I') cmd.i = val;
           if (letter === 'J') cmd.j = val;
@@ -422,10 +422,12 @@
         prevY = state.y;
 
         // Calculate true heading angle in flipped Y space
-        const moveDx = state.x - prevX;
-        const moveDy = state.y - prevY;
-        const headingAngle = (moveDx === 0 && moveDy === 0) ? 0 : Math.atan2(moveDy, moveDx);
+  //      const moveDx = state.x - prevX;
+  //      const moveDy = state.y - prevY;
+  //      const headingAngle = (moveDx === 0 && moveDy === 0) ? 0 : Math.atan2(moveDy, moveDx);
     //    const headingAngle = Math.atan2(dy, dx);
+        // Calculate heading angle from total command displacement
+        const headingAngle = (dx === 0 && dy === 0) ? 0 : Math.atan2(dy, dx);
         renderScene(headingAngle);
 
         if (step < steps) {
