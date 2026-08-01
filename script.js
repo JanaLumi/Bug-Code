@@ -258,8 +258,8 @@
     }
 
     function stepForward() {
+      const code = document.getElementById('gcode').value;
       if (parsedCommands.length === 0) {
-        const code = document.getElementById('gcode').value;
         parsedCommands = parseGCode(code);
       }
       
@@ -280,8 +280,8 @@
     }
     
     function togglePlayPause() {
+      const code = document.getElementById('gcode').value;
       if (parsedCommands.length === 0) {
-        const code = document.getElementById('gcode').value;
         parsedCommands = parseGCode(code);
       }
       
@@ -326,9 +326,16 @@
       const distance = Math.hypot(dx, dy, dz);
 
       if (distance === 0) {
-        runNextCommand();
+        currentCommandIndex++;
+        updateUI();
+        if (!isPaused && isRunning) {
+          runNextCommand();
+        } else {
+          isRunning = false;
+        }
         return;
       }
+    
 
       // Calculate animation duration based on Feed Rate (F)
       const speed = target.type === 'G00' ? 8 : (target.f / 60); // pixels per frame
