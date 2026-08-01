@@ -166,7 +166,8 @@ const canvas = document.getElementById('cncCanvas');
       let currentF = 300;
       let lastGMode = 'G01';
 
-      for (let rawLine of lines) {
+      for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+        const rawLine = lines[lineIndex];
         // Strip comments
         const line = rawLine.split(';')[0].split('(')[0].trim().toUpperCase();
         if (!line) continue;
@@ -174,7 +175,7 @@ const canvas = document.getElementById('cncCanvas');
         const tokens = line.match(/[A-Z][-+]?\d*\.?\d+/g) || [];
         if (tokens.length === 0) continue;
         
-        let cmd = { type: lastGMode, x: currentX, y: currentY, z: currentZ, f: currentF, i: 0, j: 0 };
+        let cmd = { type: lastGMode, x: currentX, y: currentY, z: currentZ, f: currentF, i: 0, j: 0, lineIndex };
         let hasMotion = false;
           
         for (let token of tokens) {
@@ -325,9 +326,11 @@ const canvas = document.getElementById('cncCanvas');
         lineEl.textContent = `Step: ${displayCurrent} / ${total}`;
       }
         
-      // Highlight active line safely
+      // Highlight active line safely (use the command's real source line,
+      // not its position in parsedCommands — comments/blank lines mean
+      // those two indices are not the same number)
       if (currentCommandIndex < total) {
-        highlightGcodeLine(currentCommandIndex);
+        highlightGcodeLine(parsedCommands[currentCommandIndex].lineIndex);
       }
     }
 
