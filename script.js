@@ -421,9 +421,12 @@
 
     // Render the main canvas view
     function renderScene(headingAngle = 0) {
-      // 1. Draw carved wood layer
+      // 1. Draw carved wood layer (Reset transform temporarily so wood fits 1:1)
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(woodCanvas, 0, 0);
+      ctx.restore();
 
       // 2. Draw Beetle Sprite
       ctx.save();
@@ -457,15 +460,15 @@
       // Head
       ctx.fillStyle = '#111';
       ctx.beginPath();
-      ctx.arc(0, -12, 6, 0, Math.PI * 2);
+      ctx.arc(0, 12, 6, 0, Math.PI * 2);
       ctx.fill();
 
       // Mandibles (Cutter Bit)
       ctx.strokeStyle = '#d4af37';
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.arc(-3, -17, 4, 0, 1.5);
-      ctx.arc(3, -17, 4, 1.6, 3.1);
+      ctx.arc(-3, 17, 4, 0, 1.5);
+      ctx.arc(3, 17, 4, 1.6, 3.1);
       ctx.stroke();
 
       ctx.restore();
