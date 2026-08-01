@@ -302,14 +302,18 @@
     
     function updateUI() {
       const total = parsedCommands.length;
-      const current = total > 0 ? currentCommandIndex : 0;
+      // Show 1-based index for step progress display
+      const displayCurrent = total > 0 ? Math.min(currentCommandIndex + 1, total) : 0;
       
-      // Update line counter text
-      document.getElementById('lineIndicator').textContent = 
-        `Step: ${current} / ${total}`;
+      const lineEl = document.getElementById('lineIndicator');
+      if (lineEl) {
+        lineEl.textContent = `Step: ${displayCurrent} / ${total}`;
+      }
         
-      // Highlight active line in editor
-      highlightGcodeLine(currentCommandIndex);
+      // Highlight active line safely
+      if (currentCommandIndex < total) {
+        highlightGcodeLine(currentCommandIndex);
+      }
     }
 
     // Execute step-by-step animation
@@ -430,7 +434,7 @@
         } else {
           currentCommandIndex++;
           updateUI();
-          if (!isPaused && isRunning) {
+          if (isRunning && !isPaused) {
             runNextCommand();
           } else {
             isRunning = false;
