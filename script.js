@@ -287,9 +287,8 @@
     function togglePlayPause() {
       console.log(`[togglePlayPause] Index: ${currentCommandIndex}/${parsedCommands.length} | Running: ${isRunning} | Paused: ${isPaused}`);
       const code = document.getElementById('gcode').value;
-      if (parsedCommands.length === 0) {
-        parsedCommands = parseGCode(code);
-      }
+      parsedCommands = parseGCode(code);
+      updateUI();
       
       isPaused = !isPaused;
       const btn = document.getElementById('btnPlayPause');
@@ -503,6 +502,7 @@
       parsedCommands = parseGCode(code);
       currentCommandIndex = 0;
       initWoodSurface();
+      updateUI();
       if (parsedCommands.length > 0) {
         isRunning = true;
         isPaused = false;
