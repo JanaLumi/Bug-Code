@@ -258,6 +258,7 @@
     }
 
     function stepForward() {
+      console.log(`[stepForward] Index: ${currentCommandIndex}/${parsedCommands.length} | Running: ${isRunning} | Paused: ${isPaused}`);
       const code = document.getElementById('gcode').value;
       if (parsedCommands.length === 0) {
         parsedCommands = parseGCode(code);
@@ -271,6 +272,7 @@
     }
     
     function stepBackward() {
+      console.log(`[stepBackward] Index: ${currentCommandIndex}/${parsedCommands.length} | Running: ${isRunning} | Paused: ${isPaused}`);
       if (currentCommandIndex > 0) {
         currentCommandIndex--;
         // Rewind state: re-render canvas up to currentLineIndex
@@ -280,6 +282,7 @@
     }
     
     function togglePlayPause() {
+      console.log(`[togglePlayPause] Index: ${currentCommandIndex}/${parsedCommands.length} | Running: ${isRunning} | Paused: ${isPaused}`);
       const code = document.getElementById('gcode').value;
       if (parsedCommands.length === 0) {
         parsedCommands = parseGCode(code);
@@ -309,6 +312,7 @@
 
     // Execute step-by-step animation
     function runNextCommand() {
+      console.log(`[runNextCommand] Executing Step ${currentCommandIndex}:`, parsedCommands[currentCommandIndex]);
       if (currentCommandIndex >= parsedCommands.length) {
         isRunning = false;
         isPaused = true;
