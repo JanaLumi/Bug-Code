@@ -289,7 +289,7 @@
       const btn = document.getElementById('btnPlayPause');
       if (btn) btn.textContent = isPaused ? '▶ Play' : '⏸ Pause';
       
-      if (!isPaused) {
+      if (!isPaused && !isRunning) {
         isRunning = true;
         runNextCommand();
       }
@@ -311,8 +311,13 @@
     function runNextCommand() {
       if (currentCommandIndex >= parsedCommands.length) {
         isRunning = false;
+        isPaused = true;
+        const btn = document.getElementById('btnPlayPause');
+        if (btn) btn.textContent = '▶ Play';
         return;
       }
+
+      isRunning = true;
 
       const target = parsedCommands[currentCommandIndex];
       
