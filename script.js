@@ -160,9 +160,9 @@
     function parseGCode(text) {
       const lines = text.split('\n');
       const commands = [];
-      let currentX = 0;
-      let currentY = 0;
-      let currentZ = 5;
+      let currentX = state.x;
+      let currentY = state.y;
+      let currentZ = state.z;
       let currentF = 300;
       let lastGMode = 'G01';
 
@@ -340,11 +340,7 @@
       if (distance === 0) {
         currentCommandIndex++;
         updateUI();
-        if (!isPaused && isRunning) {
-          runNextCommand();
-        } else {
-          isRunning = false;
-        }
+        runNextCommand();
         return;
       }
     
