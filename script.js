@@ -160,10 +160,11 @@
     function parseGCode(text) {
       const lines = text.split('\n');
       const commands = [];
-      let currentX = state.x;
-      let currentY = state.y;
-      let currentZ = state.z;
-      let currentF = state.feedRate;
+      let currentX = 0;
+      let currentY = 0;
+      let currentZ = 5;
+      let currentF = 300;
+      let lastGMode = 'G01';
 
       for (let rawLine of lines) {
         // Strip comments
@@ -171,18 +172,20 @@
         if (!line) continue;
 
         const tokens = line.match(/[A-Z][-+]?\d*\.?\d+/g) || [];
-        let cmd = { type: null, x: currentX, y: currentY, z: currentZ, f: currentF, i: 0, j: 0 };
+        if (tokens.length === 0) continue;
         
-        let moveFound = false;
+        let cmd = { type: lastGMode, x: currentX, y: currentY, z: currentZ, f: currentF, i: 0, j: 0 };
+        let hasMotion = false;
+          
         for (let token of tokens) {
           const letter = token[0];
           const val = parseFloat(token.slice(1));
 
           if (letter === 'G') {
-            if (val === 0) { cmd.type = 'G00'; moveFound = true; }
-            if (val === 1) { cmd.type = 'G01'; moveFound = true; }
-            if (val === 2) { cmd.type = 'G02'; moveFound = true; }
-            if (val === 3) { cmd.type = 'G03'; moveFound = true; }
+            if (val === 0) { cmd.type = 'G00'; lastGMode = 'G00'; }
+            if (val === 1) { cmd.type = 'G01'; lastGMode = 'G01'; }
+            if (val === 2) { cmd.type = 'G02'; lastGMode = 'G02'; }
+            if (val === 3) { cmd.type = 'G03'; lastGMode = 'G03'; }
           }
           if (letter === 'X') { cmd.x = val; moveFound = true; }
           if (letter === 'Y') { cmd.y = val; moveFound = true; }
@@ -192,7 +195,7 @@
           if (letter === 'J') cmd.j = val;
         }
 
-        if (moveFound && cmd.type) {
+        if (hasMotion) {
           commands.push(cmd);
           currentX = cmd.x;
           currentY = cmd.y;
