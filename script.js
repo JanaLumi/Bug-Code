@@ -27,43 +27,44 @@
 
     const GCODE_PRESETS = {
       // Step 1: Straight horizontal and vertical lines
-      straight: `; Step 1: Garden Path 
-; A space-filling fractal curve scaled up to span the whole garden bed!
-
-G00 X75 Y75 Z5     ; Fly to start (Bottom-Left)
-G01 Z-2 F200       ; Dig mandibles into soil
-
-; Level 2 Hilbert Curve (Scaled up to 525px)
-G01 X75 Y188 F400  ; Up
-G01 X188 Y188      ; Right
-G01 X188 Y75       ; Down
-
-G01 X300 Y75       ; Right (cross to next quadrant)
-
-G01 X300 Y188      ; Up
-G01 X413 Y188      ; Right
-G01 X413 Y75       ; Down
-
-G01 X525 Y75       ; Right (cross to next quadrant)
-
-G01 X525 Y300      ; Up
-G01 X413 Y300      ; Left
-G01 X413 Y413      ; Up
-G01 X525 Y413      ; Right
-G01 X525 Y525      ; Up
-G01 X300 Y525      ; Left
-
-G01 X300 Y413      ; Down
-G01 X188 Y413      ; Left
-G01 X188 Y525      ; Up
-G01 X75 Y525       ; Left
-G01 X75 Y300       ; Down
-G01 X188 Y300      ; Right
-
-G00 Z5             ; Lift up and fly away!`,
+      straight: `
+    ; Step 1: Garden Path 
+    ; A space-filling fractal curve scaled up to span the whole garden bed!
+    G00 X75 Y75 Z5     ; Fly to start (Bottom-Left)
+    G01 Z-2 F200       ; Dig mandibles into soil
+    
+    ; Level 2 Hilbert Curve (Scaled up to 525px)
+    G01 X75 Y188 F400  ; Up
+    G01 X188 Y188      ; Right
+    G01 X188 Y75       ; Down
+    
+    G01 X300 Y75       ; Right (cross to next quadrant)
+    
+    G01 X300 Y188      ; Up
+    G01 X413 Y188      ; Right
+    G01 X413 Y75       ; Down
+    
+    G01 X525 Y75       ; Right (cross to next quadrant)
+    
+    G01 X525 Y300      ; Up
+    G01 X413 Y300      ; Left
+    G01 X413 Y413      ; Up
+    G01 X525 Y413      ; Right
+    G01 X525 Y525      ; Up
+    G01 X300 Y525      ; Left
+    
+    G01 X300 Y413      ; Down
+    G01 X188 Y413      ; Left
+    G01 X188 Y525      ; Up
+    G01 X75 Y525       ; Left
+    G01 X75 Y300       ; Down
+    G01 X188 Y300      ; Right
+    
+    G00 Z5             ; Lift up and fly away!`,
     
       // Step 2: Diagonal lines
-      diagonal: `; Step 2: Diagonal Spiral
+      diagonal: `
+    ; Step 2: Diagonal Spiral
     ; Combining X and Y movement at the same time creates smooth diagonal steps that form a spiral!
     
     G00 X200 Y200 Z5   ; Fly to center
@@ -83,7 +84,8 @@ G00 Z5             ; Lift up and fly away!`,
     G00 Z5             ; Lift up and fly away!`,
     
       // Step 3: Arcs / Arches / Circles
-      arcs: `; Step 3: Arcs & Arches
+      arcs: `
+    ; Step 3: Arcs & Arches
     ; G02 = Clockwise Arc
     ; G03 = Counter-Clockwise Arc
     ; I and J tell the beetle where the center point of the arch is!
@@ -101,7 +103,8 @@ G00 Z5             ; Lift up and fly away!`,
     G00 Z5             ; Lift up`,
     
       // Step 4: Playing with Z-Depth (Variable Dark Brown Lines)
-      depth: `; Step 4: Z-Depth Digging
+      depth: `
+    ; Step 4: Z-Depth Digging
     ; Notice how the line gets darker and wider as Z goes deeper!
     
     G00 X50 Y150 Z5   ; Fly to start
@@ -284,7 +287,7 @@ G00 Z5             ; Lift up and fly away!`,
       
       isPaused = !isPaused;
       const btn = document.getElementById('btnPlayPause');
-      btn.textContent = isPaused ? '▶ Play' : '⏸ Pause';
+      if (btn) btn.textContent = isPaused ? '▶ Play' : '⏸ Pause';
       
       if (!isPaused) {
         isRunning = true;
@@ -400,7 +403,10 @@ G00 Z5             ; Lift up and fly away!`,
         prevY = state.y;
 
         // Calculate true heading angle in flipped Y space
-        const headingAngle = Math.atan2(dy, dx);
+        const moveDx = state.x - prevX;
+        const moveDy = state.y - prevY;
+        const headingAngle = (moveDx === 0 && moveDy === 0) ? 0 : Math.atan2(moveDy, moveDx);
+    //    const headingAngle = Math.atan2(dy, dx);
         renderScene(headingAngle);
 
         if (step < steps) {
@@ -434,7 +440,7 @@ G00 Z5             ; Lift up and fly away!`,
   //    ctx.scale(1, -1);
 
       // Rotate towards movement direction
-      ctx.rotate(headingAngle + Math.PI / 2);
+      ctx.rotate(headingAngle - Math.PI / 2);
       
       // Scale sprite based on Z height (higher Z = beetle flies closer to camera)
       const scale = 1 + Math.max(0, state.z) * 0.05;
@@ -489,10 +495,14 @@ G00 Z5             ; Lift up and fly away!`,
 
     document.getElementById('reset').addEventListener('click', () => {
       isRunning = false;
-      animationQueue = [];
+      isPaused = false;
+      parsedCommands = [];
+      currentCommandIndex = 0;
+   //   animationQueue = [];
       state = { x: 20, y: 20, z: 5, feedRate: 300 };
       initWoodSurface();
       renderScene(0);
+      updateUI();
     });
 
     // Boot up canvas state
