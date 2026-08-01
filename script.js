@@ -1,4 +1,4 @@
-    const canvas = document.getElementById('cncCanvas');
+const canvas = document.getElementById('cncCanvas');
     const ctx = canvas.getContext('2d');
     
     // Create off-screen canvas to hold wood carving memory
@@ -288,16 +288,31 @@
       console.log(`[togglePlayPause] Index: ${currentCommandIndex}/${parsedCommands.length} | Running: ${isRunning} | Paused: ${isPaused}`);
       const code = document.getElementById('gcode').value;
       parsedCommands = parseGCode(code);
-      updateUI();
-      
-      isPaused = !isPaused;
+
       const btn = document.getElementById('btnPlayPause');
-      if (btn) btn.textContent = isPaused ? '▶ Play' : '⏸ Pause';
-      
-      if (!isPaused && !isRunning) {
-        isRunning = true;
-        runNextCommand();
+
+      // isRunning is the source of truth for "currently animating".
+      // Using it (instead of toggling isPaused blindly) means the first
+      // press always plays, no matter what isPaused happened to start as.
+      if (isRunning) {
+        isPaused = true;
+        isRunning = false;
+        if (btn) btn.textContent = '▶ Play';
+        updateUI();
+        return;
       }
+
+      // A finished run leaves currentCommandIndex at the end. Starting
+      // over from there did nothing before, so restart from line 0.
+      if (currentCommandIndex >= parsedCommands.length) {
+        currentCommandIndex = 0;
+      }
+
+      isPaused = false;
+      isRunning = true;
+      if (btn) btn.textContent = '⏸ Pause';
+      updateUI();
+      runNextCommand();
     }
     
     function updateUI() {
@@ -343,7 +358,11 @@
       if (distance === 0) {
         currentCommandIndex++;
         updateUI();
-        runNextCommand();
+        if (isRunning && !isPaused) {
+          runNextCommand();
+        } else {
+          isRunning = false;
+        }
         return;
       }
     
