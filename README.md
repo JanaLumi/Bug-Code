@@ -20,6 +20,8 @@ To keep the UI clean without overcrowding the primary G-code editor, we can move
    A view for selecting carving challenges or saving custom creations.
 3. Math & LaTeX Generator Workflow
 Instead of forcing users to manually calculate hundreds of points, the generator turns mathematical functions into G01 linear segments.
+
+```
 +-----------------------------------------------------------------------+
 |  LaTeX / Math Input Field                                             |
 |  f(x) = 20 * \sin(x / 10) + 50                                        |
@@ -37,6 +39,7 @@ Instead of forcing users to manually calculate hundreds of points, the generator
 +-----------------------------------------------------------------------+
 |  [ Generate G-Code ] ──> Sends generated code directly to Screen 1    |
 +-----------------------------------------------------------------------+
+```
 
 4. Supporting Multiple Functions & LaTeX Accessibility
  * Multiple Functions Stack:
