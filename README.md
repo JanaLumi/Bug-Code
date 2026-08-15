@@ -10,6 +10,7 @@ Recap of game concepts, followed by how to structure the Math/LaTeX Function Plo
  * Interactive Toolpath Visualiser: Stepping through G-code line-by-line (G00, G01, G02/G03 arc interpolation) with real-time speed, feed rate, and Z-depth tracking.
  * Level/Puzzle System: Challenges where players must write or modify G-code to carve specific shapes (e.g., Hilbert curves, spirals, pockets) while avoiding obstacles or material boundaries.
  * G-Code Preset Library: Built-in templates ranging from basic straight paths to complex fractal patterns to teach syntax progressively.
+ * Pendant & iPod Clickwheel Controller: an interactive virtual remote control that converts physical gestures into G-code commands in real time. Users can control machine movement through tactile exploration before learning raw syntax.
 2. Multi-Screen Architecture Concept
 To keep the UI clean without overcrowding the primary G-code editor, we can move to a multi-screen workspace:
  * Screen 1: Code & Stepper Editor (Current View)
@@ -50,6 +51,44 @@ Instead of forcing users to manually calculate hundreds of points, the generator
    * A live preview renders the equation using a lightweight renderer (like MathJax or KaTeX) right above the input field so users see standard mathematical notation.
    * An automated parser converts the LaTeX input into standard JavaScript Math expressions behind the scenes (e.g., \sin(x) \rightarrow Math.sin(x)).
 When you are ready to start building this next iteration, we can begin by laying down the multi-screen tab structure or writing the Math-to-Gcode parsing logic!
+
+## Pendant & iPod Clickwheel Controller (Feature Spec)
+This feature introduces an interactive virtual remote control (CNC Pendant) that converts physical gestures into G-code commands in real time. Users can control machine movement through tactile exploration before learning raw syntax.
+Core Architecture & Dual-Mode Controls
+ * Mode 1: Orthogonal (XY Grid Mode)
+   * Behavior: Tracing the wheel moves the beetle strictly along cardinal axes (X and Y).
+   * Interaction: Top/Bottom arcs drive Y-axis translation; Left/Right arcs drive X-axis translation.
+   * Learning Goal: Builds a direct mental model of Cartesian coordinates.
+ * Mode 2: Polar (iPod Clickwheel Mode)
+   * Behavior: Rotating the outer ring continuously adjusts the heading angle (\theta, 0°–360°). Holding down the center pad moves the beetle forward along that vector by distance r.
+   * Math Engine: Automatically converts polar coordinates to Cartesian G-code using:
+     
+   * Learning Goal: Offers organic movement while teaching how polar angles map to standard X/Y linear interpolation.
+Targeted Cursor Insertion
+Generated G-code is inserted directly at the user's active text cursor inside the editor rather than overwriting existing code.
+function insertGeneratedGCode(commandText) {
+  const textarea = document.getElementById('gcode');
+  const startPos = textarea.selectionStart;
+  const endPos = textarea.selectionEnd;
+  const currentValue = textarea.value;
+
+  // Insert command at active cursor position
+  textarea.value = currentValue.substring(0, startPos) +
+                   commandText + '\n' +
+                   currentValue.substring(endPos);
+
+  // Advance cursor to the next line
+  const newCursorPos = startPos + commandText.length + 1;
+  textarea.selectionStart = newCursorPos;
+  textarea.selectionEnd = newCursorPos;
+  textarea.focus();
+}
+
+Implementation To-Do List
+ * Build the Virtual Pendant UI overlay with Mode 1 / Mode 2 toggle switches.
+ * Add Z-axis plunge (Z-2) and retract (Z5) quick-action buttons.
+ * Implement touch/drag event listeners for circular ring rotation and center-pad holding.
+ * Connect the Record Waypoint button to insertGeneratedGCode() to log active positions.
 
 ## Other planned features
 
