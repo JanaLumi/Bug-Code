@@ -2,15 +2,15 @@
 Games to familiarise with G-Code
 
 
-Normalising CNC and breaking it out of specialized, gatekept engineering software. Turning mathematical curves into live toolpaths to give people immediate, visual feedback on how equations manifest in the physical world.
+Normalising CNC and breaking it out of specialised, gatekept engineering software. Turning mathematical curves into live toolpaths to give people immediate, visual feedback on how equations manifest in the physical world.
 
 Recap of game concepts, followed by how to structure the Math/LaTeX Function Plotter tool and multi-screen system.
 1. Previous CNC Game & Features Roadmap
- * Subterranean Wood-Carving Theme: Using the carpenter ant / beetle aesthetic, where cutting through wood reveals different depth layers (sapwood down to dark heartwood).
- * Interactive Toolpath Visualiser: Stepping through G-code line-by-line (G00, G01, G02/G03 arc interpolation) with real-time speed, feed rate, and Z-depth tracking.
- * Level/Puzzle System: Challenges where players must write or modify G-code to carve specific shapes (e.g., Hilbert curves, spirals, pockets) while avoiding obstacles or material boundaries.
- * G-Code Preset Library: Built-in templates ranging from basic straight paths to complex fractal patterns to teach syntax progressively.
- * Pendant & iPod Clickwheel Controller: an interactive virtual remote control that converts physical gestures into G-code commands in real time. Users can control machine movement through tactile exploration before learning raw syntax.
+ * **Subterranean Wood-Carving Theme:** Using the carpenter ant / beetle aesthetic, where cutting through wood reveals different depth layers (sapwood down to dark heartwood).
+ * **Interactive Toolpath Visualiser:** Stepping through G-code line-by-line (G00, G01, G02/G03 arc interpolation) with real-time speed, feed rate, and Z-depth tracking.
+ * **Level/Puzzle System:** Challenges where players must write or modify G-code to carve specific shapes (e.g., Hilbert curves, spirals, pockets) while avoiding obstacles or material boundaries.
+ * **G-Code Preset Library:** Built-in templates ranging from basic straight paths to complex fractal patterns to teach syntax progressively.
+ * **Pendant & iPod Clickwheel:** an interactive virtual remote control that converts physical gestures into G-code commands in real time. Users can control machine movement through tactile exploration before learning raw syntax.
 2. Multi-Screen Architecture Concept
 To keep the UI clean without overcrowding the primary G-code editor, we can move to a multi-screen workspace:
  * Screen 1: Code & Stepper Editor (Current View)
@@ -52,7 +52,7 @@ Instead of forcing users to manually calculate hundreds of points, the generator
    * An automated parser converts the LaTeX input into standard JavaScript Math expressions behind the scenes (e.g., \sin(x) \rightarrow Math.sin(x)).
 When you are ready to start building this next iteration, we can begin by laying down the multi-screen tab structure or writing the Math-to-Gcode parsing logic!
 
-## Pendant & iPod Clickwheel Controller (Feature Spec)
+## Pendant & iPod Clickwheel: Feature Spec
 This feature introduces an interactive virtual remote control (CNC Pendant) that converts physical gestures into G-code commands in real time. Users can control machine movement through tactile exploration before learning raw syntax.
 Core Architecture & Dual-Mode Controls
  * Mode 1: Orthogonal (XY Grid Mode)
