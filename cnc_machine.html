@@ -355,6 +355,381 @@
         </div>
     </div>
 
+    <!-- JAVASCRIPT APPLICATION LOGIC -->
+    <script>
+        // --- GLOBAL MACHINE STATE ---
+        const state = {
+            appMode: 'OPERATE', // 'OPERATE' or 'INSPECT'
+            machineMode: 'AUTO', // 'AUTO', 'MDI', 'MANUAL', 'JOG', 'EDIT'
+            eStopActive: false,
+            eStopStep: 0, // 0 = Latched, 1 = Unlatched, 2 = Power On, 3 = Cleared
+            softkeyPage: 1, // 1 or 2
+            currentSoftkeyView: 'POSITION', // 'POSITION', 'PROGRAM', 'BLOCK', 'SEARCH', 'CHECK'
+            xPos: 113.000,
+            zPos: 8.100,
+            rpm: 340,
+            feedOverride: 100,
+            spindleOverride: 100,
+            mpgAxis: 'X',
+            mpgMultiplier: 1,
+            overlayVisible: false,
+            openAccordionId: null,
+            inputBuffer: ''
+        };
+
+        // --- DYNAMIC SOFTKEY MAPS PER MODE ---
+        const softkeyConfig = {
+            AUTO: {
+                page1: [
+                    { name: "Program Select", desc: "Selects active program file from directory." },
+                    { name: "Actual Position", desc: "Displays real-time X/Z axis positions and distance-to-go." },
+                    { name: "Part Program", desc: "Shows full G-code text buffer with active block line highlighting." },
+                    { name: "Block Data", desc: "Displays modal G-codes, feedrate, speed, and active tool codes." },
+                    { name: "Search", desc: "Searches for specific sequence numbers (N) or tool codes in program." },
+                    { name: "—", desc: "Unassigned softkey in this page." },
+                    { name: "Check Data", desc: "Runs dry run calculation or program check without axis motion." },
+                    { name: "[Extend]", desc: "Cycles to secondary softkey function page." }
+                ],
+                page2: [
+                    { name: "Tool Offset", desc: "Opens tool offset geometry and wear compensation table." },
+                    { name: "Zero Set", desc: "Displays work coordinate system offsets (G54-G59)." },
+                    { name: "Mac Man", desc: "Machining Management productivity diagnostic metrics." },
+                    { name: "Graphic", desc: "Displays 2D toolpath trajectory simulation graph." },
+                    { name: "Parameter", desc: "Accesses system user parameters and pitch error tables." },
+                    { name: "Diagnostic", desc: "Displays PLC I/O status and system diagnostics." },
+                    { name: "Operation Log", desc: "Views historical machine alarm and operator action logs." },
+                    { name: "[Extend]", desc: "Returns to primary softkey function page." }
+                ]
+            },
+            MDI: {
+                page1: [
+                    { name: "MDI Input", desc: "Opens command entry buffer for single-block execution." },
+                    { name: "Actual Position", desc: "Displays current machine position coordinates." },
+                    { name: "Tool Offset", desc: "Quick access to tool offset adjustment table." },
+                    { name: "Zero Set", desc: "Workpiece origin setting view." },
+                    { name: "Data Search", desc: "Finds specific parameters or MDI history entries." },
+                    { name: "—", desc: "Unassigned key." },
+                    { name: "Clear Buffer", desc: "Erases typed MDI command text." },
+                    { name: "[Extend]", desc: "Toggle extended softkey menu." }
+                ]
+            },
+            MANUAL: {
+                page1: [
+                    { name: "Actual Position", desc: "Shows real-time machine position coordinates." },
+                    { name: "Tool Offset", desc: "Displays tool length/radius geometry offsets." },
+                    { name: "Zero Set", desc: "Sets workpiece coordinate system origins." },
+                    { name: "Touch Setter", desc: "Engages automatic tool setter sensor arm." },
+                    { name: "Chuck State", desc: "Monitors chuck clamp/unclamp status." },
+                    { name: "Tailstock", desc: "Controls tailstock quill advance/retract." },
+                    { name: "Diagnostic", desc: "Displays diagnostic I/O status." },
+                    { name: "[Extend]", desc: "Toggle extended softkey menu." }
+                ]
+            }
+        };
+
+        // --- INIT ON LOAD ---
+        window.onload = () => {
+            renderCRT();
+            updateSoftkeys();
+        };
+
+        // --- APP MODE TOGGLE (OPERATE VS INSPECT) ---
+        function toggleAppMode() {
+            state.appMode = state.appMode === 'OPERATE' ? 'INSPECT' : 'OPERATE';
+            const btn = document.getElementById('mode-toggle-btn');
+            if (state.appMode === 'INSPECT') {
+                btn.innerText = 'MODE: INSPECT';
+                btn.className = 'bg-amber-500 text-slate-950 text-xs font-black px-2 py-1 rounded shadow animate-pulse';
+            } else {
+                btn.innerText = 'MODE: OPERATE';
+                btn.className = 'bg-slate-800 text-amber-400 text-xs font-semibold px-2 py-1 rounded border border-slate-600 shadow';
+            }
+        }
+
+        function handleButtonAction(title, desc, safety) {
+            if (state.appMode === 'INSPECT') {
+                openInspector(title, desc, safety);
+            } else {
+                if (state.eStopActive) return;
+                // Feedback in CRT status
+                document.getElementById('crt-alarm-badge').innerText = `KEY: ${title}`;
+                setTimeout(() => {
+                    if (!state.eStopActive) document.getElementById('crt-alarm-badge').innerText = 'STATUS: NORMAL';
+                }, 1500);
+            }
+        }
+
+        // --- KEY OVERLAY TOGGLE & ACCORDION SYSTEM ---
+        function toggleKeyOverlay() {
+            state.overlayVisible = !state.overlayVisible;
+            const panel = document.getElementById('key-overlay-panel');
+            const statusText = document.getElementById('overlay-status-text');
+            
+            if (state.overlayVisible) {
+                panel.classList.remove('hidden');
+                statusText.innerText = 'HIDE';
+                renderSoftkeyOverlayList();
+            } else {
+                panel.classList.add('hidden');
+                statusText.innerText = 'KEYS';
+            }
+        }
+
+        function renderSoftkeyOverlayList() {
+            const listContainer = document.getElementById('softkey-overlay-list');
+            const modeConfig = softkeyConfig[state.machineMode] || softkeyConfig.AUTO;
+            const currentKeys = state.softkeyPage === 1 ? modeConfig.page1 : (modeConfig.page2 || modeConfig.page1);
+            
+            listContainer.innerHTML = '';
+
+            currentKeys.forEach((key, index) => {
+                const fnNum = index + 1;
+                const isOpen = state.openAccordionId === fnNum;
+
+                const card = document.createElement('div');
+                card.className = 'bg-slate-800 border border-slate-700 rounded overflow-hidden shadow-sm transition-all';
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between p-1.5 cursor-pointer hover:bg-slate-750" onclick="handleOverlayCardClick(${fnNum})">
+                        <div class="flex items-center space-x-2">
+                            <span class="bg-amber-500 text-slate-950 font-bold px-1.5 py-0.5 rounded text-[10px]">F${fnNum}</span>
+                            <span class="font-bold text-slate-200 text-xs">${key.name}</span>
+                        </div>
+                        <button onclick="event.stopPropagation(); toggleAccordion(${fnNum})" class="text-amber-400 hover:text-amber-300 font-bold px-2 py-0.5 text-xs rounded bg-slate-900 border border-slate-700">
+                            ${isOpen ? '▲' : '▼'}
+                        </button>
+                    </div>
+                    ${isOpen ? `
+                        <div class="p-2 bg-slate-950 border-t border-slate-800 text-[11px] text-slate-300 space-y-1">
+                            <p>${key.desc}</p>
+                            <div class="flex justify-end pt-1">
+                                <button onclick="handleSoftkeyPress(${fnNum})" class="bg-amber-600 text-slate-950 font-bold px-2 py-0.5 rounded text-[10px]">Execute F${fnNum}</button>
+                            </div>
+                        </div>
+                    ` : ''}
+                `;
+
+                listContainer.appendChild(card);
+            });
+        }
+
+        function toggleAccordion(fnNum) {
+            state.openAccordionId = state.openAccordionId === fnNum ? null : fnNum;
+            renderSoftkeyOverlayList();
+        }
+
+        function handleOverlayCardClick(fnNum) {
+            if (state.appMode === 'INSPECT') {
+                toggleAccordion(fnNum);
+            } else {
+                handleSoftkeyPress(fnNum);
+            }
+        }
+
+        // --- SOFTKEY PRESS HANDLER ---
+        function handleSoftkeyPress(num) {
+            if (state.eStopActive) return;
+
+            if (num === 8) {
+                // Cycle Softkey Page
+                state.softkeyPage = state.softkeyPage === 1 ? 2 : 1;
+                updateSoftkeys();
+                if (state.overlayVisible) renderSoftkeyOverlayList();
+                return;
+            }
+
+            const views = ['POSITION', 'PROGRAM', 'BLOCK', 'SEARCH', 'POSITION', 'POSITION', 'POSITION'];
+            state.currentSoftkeyView = views[num - 1] || 'POSITION';
+            renderCRT();
+        }
+
+        function updateSoftkeys() {
+            const container = document.getElementById('crt-softkeys');
+            const modeConfig = softkeyConfig[state.machineMode] || softkeyConfig.AUTO;
+            const currentKeys = state.softkeyPage === 1 ? modeConfig.page1 : (modeConfig.page2 || modeConfig.page1);
+
+            container.innerHTML = '';
+            currentKeys.forEach((k) => {
+                const cell = document.createElement('div');
+                cell.className = 'truncate text-[8px] sm:text-[9px] font-bold text-emerald-400';
+                cell.innerText = k.name;
+                container.appendChild(cell);
+            });
+        }
+
+        // --- CRT DISPLAY RENDERER ---
+        function renderCRT() {
+            const view = document.getElementById('crt-view-content');
+            document.getElementById('crt-mode-badge').innerText = `MODE: ${state.machineMode} (P.${state.softkeyPage})`;
+
+            if (state.eStopActive) {
+                view.innerHTML = `
+                    <div class="flex-1 flex flex-col items-center justify-center text-red-500 animate-pulse space-y-1">
+                        <span class="text-base font-bold">*** ALARM 100-4 ***</span>
+                        <span class="text-xs">EMERGENCY STOP ENGAGED</span>
+                        <span class="text-[10px] text-amber-400">UNLATCH E-STOP -> CONTROL ON -> RESET</span>
+                    </div>
+                `;
+                return;
+            }
+
+            // Main CRT Readout
+            view.innerHTML = `
+                <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+                    <div class="space-y-0.5">
+                        <div class="flex justify-between"><span>X</span><span class="text-emerald-300 font-bold">${state.xPos.toFixed(3)} mm</span></div>
+                        <div class="flex justify-between"><span>Xd</span><span>0.000</span></div>
+                        <div class="flex justify-between"><span>Z</span><span class="text-emerald-300 font-bold">${state.zPos.toFixed(3)} mm</span></div>
+                        <div class="flex justify-between"><span>Zd</span><span>0.000</span></div>
+                    </div>
+                    <div class="space-y-0.5 border-l border-emerald-900 pl-2">
+                        <div class="flex justify-between"><span>N2</span><span>T010101</span></div>
+                        <div class="flex justify-between"><span>S</span><span>${Math.round(state.rpm * (state.spindleOverride/100))} RPM</span></div>
+                        <div class="flex justify-between"><span>F</span><span>${(0.2 * (state.feedOverride/100)).toFixed(2)} mm/r</span></div>
+                        <div class="flex justify-between"><span>OVR</span><span>F:${state.feedOverride}% S:${state.spindleOverride}%</span></div>
+                    </div>
+                </div>
+
+                <div class="bg-emerald-950/60 p-1 rounded border border-emerald-900/80 text-[10px] font-mono mt-1">
+                    <span class="text-amber-400 font-bold">ACTUAL PROGRAM: O1001.MIN</span><br>
+                    <span class="text-emerald-300">N10 G00 X100. Z50. M08</span><br>
+                    <span>N12 G01 Z2. F0.25 S350 M03</span>
+                </div>
+            `;
+        }
+
+        // --- MACHINE CONTROLS & EMERGENCY STOP ---
+        function setMachineMode(mode) {
+            state.machineMode = mode;
+            state.softkeyPage = 1;
+            
+            // UI Button highlights
+            ['auto', 'mdi', 'manual', 'jog', 'edit'].forEach(m => {
+                const el = document.getElementById(`mode-${m}`);
+                if (el) {
+                    if (m.toUpperCase() === mode) {
+                        el.className = 'bg-amber-500 text-slate-950 font-bold py-2 rounded border border-amber-300 text-xs shadow text-center';
+                    } else {
+                        el.className = 'bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold py-2 rounded border border-slate-500 text-xs shadow text-center';
+                    }
+                }
+            });
+
+            updateSoftkeys();
+            if (state.overlayVisible) renderSoftkeyOverlayList();
+            renderCRT();
+        }
+
+        function triggerEStop() {
+            state.eStopActive = true;
+            state.eStopStep = 0;
+            document.getElementById('estop-modal').classList.remove('hidden');
+            document.getElementById('crt-alarm-badge').innerText = 'ALARM: E-STOP';
+            document.getElementById('crt-alarm-badge').className = 'bg-red-950 px-1 rounded text-[10px] text-red-400 font-bold animate-pulse';
+            renderCRT();
+        }
+
+        function unlatchEStop() {
+            state.eStopStep = 1;
+            document.getElementById('step-1').className = 'text-emerald-400 font-bold line-through';
+            document.getElementById('step-2').className = 'text-amber-300 font-bold';
+            document.getElementById('unlatch-btn').innerText = 'Step 1 Complete (Unlatched)';
+            document.getElementById('unlatch-btn').className = 'flex-1 bg-slate-800 text-slate-500 font-bold py-2 rounded text-xs cursor-not-allowed';
+        }
+
+        function pressControlOn() {
+            if (state.eStopActive && state.eStopStep === 1) {
+                state.eStopStep = 2;
+                document.getElementById('step-2').className = 'text-emerald-400 font-bold line-through';
+                document.getElementById('step-3').className = 'text-amber-300 font-bold';
+            } else if (!state.eStopActive) {
+                handleButtonAction('CONTROL ON', 'Energizes main hydraulic power and servo drive contractors.', 'Ensure emergency stop is pulled out before turning control power on.');
+            }
+        }
+
+        function pressReset() {
+            if (state.eStopActive && state.eStopStep === 2) {
+                state.eStopActive = false;
+                state.eStopStep = 3;
+                closeEStopModal();
+                document.getElementById('crt-alarm-badge').innerText = 'STATUS: NORMAL';
+                document.getElementById('crt-alarm-badge').className = 'bg-emerald-950 px-1 rounded text-[10px] text-emerald-400';
+                renderCRT();
+            } else {
+                handleButtonAction('RESET', 'Clears current alarms, stops spindle, and resets G-code buffer execution pointer.', 'Pressing reset while cutting stops feed motion immediately.');
+            }
+        }
+
+        function closeEStopModal() {
+            document.getElementById('estop-modal').classList.add('hidden');
+        }
+
+        // --- OVERRIDES & JOGGING ---
+        function updateFeedOverride(val) {
+            state.feedOverride = val;
+            document.getElementById('feed-val').innerText = `${val}%`;
+            renderCRT();
+        }
+
+        function updateSpindleOverride(val) {
+            state.spindleOverride = val;
+            document.getElementById('spindle-val').innerText = `${val}%`;
+            renderCRT();
+        }
+
+        function selectMPGAxis(axis) {
+            state.mpgAxis = axis;
+            document.getElementById('mpg-x').className = axis === 'X' ? 'bg-amber-500 text-slate-950 font-bold px-2.5 py-1 rounded text-xs border border-amber-300' : 'bg-slate-700 text-slate-200 font-bold px-2.5 py-1 rounded text-xs border border-slate-500';
+            document.getElementById('mpg-z').className = axis === 'Z' ? 'bg-amber-500 text-slate-950 font-bold px-2.5 py-1 rounded text-xs border border-amber-300' : 'bg-slate-700 text-slate-200 font-bold px-2.5 py-1 rounded text-xs border border-slate-500';
+        }
+
+        function setMPGMultiplier(mult) {
+            state.mpgMultiplier = mult;
+            [1, 10, 50].forEach(m => {
+                const btn = document.getElementById(`mpg-x${m}`);
+                if (btn) btn.className = m === mult ? 'bg-amber-500 text-slate-950 font-bold px-2 py-0.5 rounded text-[10px]' : 'bg-slate-700 text-slate-200 font-bold px-2 py-0.5 rounded text-[10px]';
+            });
+        }
+
+        function jogAxis(axis, dir) {
+            if (state.eStopActive) return;
+            const step = 0.05 * state.mpgMultiplier * dir;
+            if (axis === 'X') state.xPos += step;
+            if (axis === 'Z') state.zPos += step;
+            renderCRT();
+        }
+
+        function typeKey(key) {
+            if (state.appMode === 'INSPECT') {
+                openInspector(`KEYPAD: [ ${key} ]`, `Types character '${key}' into the active MDI command or edit line buffer.`, 'Double-check values before pressing WRITE.');
+            } else {
+                state.inputBuffer += key;
+            }
+        }
+
+        function pressWrite() {
+            if (state.appMode === 'INSPECT') {
+                openInspector('WRITE KEY', 'Confirms buffer input and writes data into active memory offset or program block.', 'Always confirm decimal placement before pressing WRITE.');
+            } else {
+                state.inputBuffer = '';
+            }
+        }
+
+        // --- INSPECTOR MODAL ---
+        function openInspector(title, desc, safety) {
+            document.getElementById('inspect-title').innerText = title;
+            document.getElementById('inspect-desc').innerText = desc;
+            document.getElementById('inspect-safety').innerText = safety;
+            document.getElementById('inspector-modal').classList.remove('hidden');
+        }
+
+        function closeInspector() {
+            document.getElementById('inspector-modal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
+
   
 
 
