@@ -45,8 +45,23 @@
 </head>
 <body class="bg-slate-950 text-slate-100 flex flex-col h-screen w-screen overflow-hidden no-select">
 
-    <!-- TOP SECTION: FIXED CRT MONITOR (42% Height) -->
-    <div id="crt-container" class="h-[42%] w-full bg-slate-900 border-b-4 border-slate-700 flex flex-col justify-between p-2 relative shadow-lg">
+    <!-- TOP APP BAR (Above CRT Display) -->
+    <div class="bg-slate-950 px-3 py-1.5 border-b border-slate-800 flex justify-between items-center z-20">
+        <div class="flex items-center space-x-2">
+            <span class="text-xs font-bold text-slate-400">CNC Machine</span>
+            <button id="toggle-overlay-btn" onclick="toggleKeyOverlay()" class="bg-amber-600 hover:bg-amber-500 active:scale-95 text-slate-950 font-black px-2.5 py-1 rounded-full shadow border border-amber-300 text-xs flex items-center space-x-1">
+                <span>🗝️</span>
+                <span id="overlay-status-text" class="text-[10px]">KEYS</span>
+            </button>
+        </div>
+    
+        <button id="mode-toggle-btn" onclick="toggleAppMode()" class="bg-slate-800 hover:bg-slate-700 text-xs text-amber-400 font-semibold px-2 py-1 rounded border border-slate-600 shadow">
+            MODE: OPERATE
+        </button>
+    </div>
+
+    <!-- CRT MONITOR CONTAINER (Clean, unobstructed header) -->
+    <div id="crt-container" class="h-[40%] w-full bg-slate-900 border-b-4 border-slate-700 flex flex-col justify-between p-2 relative shadow-lg">
         
         <!-- CRT Monitor Top Header -->
         <div class="crt-screen rounded p-2 border-2 border-emerald-900 flex-1 flex flex-col justify-between overflow-hidden relative">
@@ -79,18 +94,6 @@
             <button onclick="handleSoftkeyPress(6)" class="bg-slate-700 hover:bg-slate-600 active:bg-slate-500 text-slate-200 text-[10px] font-bold py-1.5 rounded border border-slate-500 shadow active:translate-y-0.5 transition-all">F6</button>
             <button onclick="handleSoftkeyPress(7)" class="bg-slate-700 hover:bg-slate-600 active:bg-slate-500 text-slate-200 text-[10px] font-bold py-1.5 rounded border border-slate-500 shadow active:translate-y-0.5 transition-all">F7</button>
             <button onclick="handleSoftkeyPress(8)" class="bg-slate-700 hover:bg-slate-600 active:bg-slate-500 text-slate-200 text-[10px] font-bold py-1.5 rounded border border-slate-500 shadow active:translate-y-0.5 transition-all">F8</button>
-        </div>
-
-        <!-- Floating Key Overlay Toggle Button (🗝️) & Inspector Bar -->
-        <div class="absolute top-3 right-3 flex items-center space-x-2 z-20">
-            <button id="toggle-overlay-btn" onclick="toggleKeyOverlay()" class="bg-amber-600 hover:bg-amber-500 active:scale-95 text-slate-900 font-black px-2.5 py-1 rounded-full shadow-lg border border-amber-300 text-xs flex items-center space-x-1">
-                <span>🗝️</span>
-                <span id="overlay-status-text" class="hidden sm:inline">KEYS</span>
-            </button>
-            
-            <button id="mode-toggle-btn" onclick="toggleAppMode()" class="bg-slate-800 hover:bg-slate-700 text-xs text-amber-400 font-semibold px-2 py-1 rounded border border-slate-600 shadow">
-                MODE: OPERATE
-            </button>
         </div>
 
         <!-- COMPACT FUNCTION KEY OVERLAY PANEL (Toggled via 🗝️) -->
