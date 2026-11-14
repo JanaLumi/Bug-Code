@@ -20,7 +20,7 @@ const els = {
   feedbackBar: document.getElementById("feedback-bar"),
   buttonGrid: document.getElementById("button-grid"),
   prevStepBtn: document.getElementById("prev-step-btn"),
-  nextStepBtn: document.getElementById("next-step-btn"),
+//  nextStepBtn: document.getElementById("next-step-btn"),
   resetBtn: document.getElementById("reset-btn"),
 };
 
@@ -80,12 +80,14 @@ function renderVisual(visualValue, altText) {
 }
 
 // Native Web Speech API (works directly on GitHub Pages / mobile browsers)
-function speakFinnish(text, rate = 0.95) {
+function speakSuomi(text, rate = 0.95) {
   if (!("speechSynthesis" in window)) {
     showFeedback("Selaimesi ei tue puhesynteesiä.", "error");
     return;
   }
   window.speechSynthesis.cancel();
+  window.speechSynthesis.resume();
+  
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = "fi-FI";
   utterance.rate = rate;
@@ -94,6 +96,7 @@ function speakFinnish(text, rate = 0.95) {
   const fiVoice = voices.find((v) => v.lang.toLowerCase().startsWith("fi"));
   if (fiVoice) utterance.voice = fiVoice;
 
+  window._currentUtterance = utterance;
   window.speechSynthesis.speak(utterance);
 }
 
@@ -147,25 +150,25 @@ function renderStep() {
 }
 
 function handleButtonPress(selectedIndex, btnEl, step) {
-  const targetIndex = Number(step.target_btn);
+  const targetIndex = parseInt(step.target_btn, 10);
   document.querySelectorAll(".cnc-btn").forEach((b) => b.classList.remove("correct", "wrong"));
 
   if (selectedIndex === targetIndex) {
     btnEl.classList.add("correct");
     showFeedback(`Oikein! (${step[`btn${selectedIndex}_label`]})`, "success");
     setTimeout(() => {
-      if (currentIndex < activities.length - 1) {
+      if (currentIndex < exercises.length - 1) {
         currentIndex++;
         renderStep();
-        speakFinnish(activities[currentIndex].prompt_fi, 0.95);
+        speakFinnish(exercises[currentIndex].prompt_fi, 0.95);
       } else {
         showFeedback("Kaikki vaiheet suoritettu!", "success");
       }
-    }, 900);
+    }, 650);
   } else {
     btnEl.classList.add("wrong");
     showFeedback("Väärä painike. Kuuntele ohje uudelleen.", "error");
-    speakFinnish(step.prompt_fi, 0.85);
+    speakSuomi(step.prompt_fi, 0.85);
   }
 }
 
@@ -184,11 +187,11 @@ async function init() {
 
 // Event Listeners
 els.playAudioBtn.addEventListener("click", () => {
-  if (activities[currentIndex]) speakFinnish(activities[currentIndex].prompt_fi, 0.95);
+  if (activities[currentIndex]) speakSuomi(activities[currentIndex].prompt_fi, 0.95);
 });
 
 els.slowAudioBtn.addEventListener("click", () => {
-  if (activities[currentIndex]) speakFinnish(activities[currentIndex].prompt_fi, 0.72);
+  if (activities[currentIndex]) speakSuomi(activities[currentIndex].prompt_fi, 0.72);
 });
 
 els.toggleLabelsBtn.addEventListener("click", () => {
@@ -202,13 +205,6 @@ els.toggleLabelsBtn.addEventListener("click", () => {
 els.prevStepBtn.addEventListener("click", () => {
   if (currentIndex > 0) {
     currentIndex--;
-    renderStep();
-  }
-});
-
-els.nextStepBtn.addEventListener("click", () => {
-  if (currentIndex < activities.length - 1) {
-    currentIndex++;
     renderStep();
   }
 });
