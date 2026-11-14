@@ -153,16 +153,18 @@ function renderStep() {
 
 function handleButtonPress(selectedIndex, btnEl, step) {
   const targetIndex = parseInt(step.target_btn, 10);
+  
   document.querySelectorAll(".cnc-btn").forEach((b) => b.classList.remove("correct", "wrong"));
 
   if (selectedIndex === targetIndex) {
     btnEl.classList.add("correct");
     showFeedback(`Oikein! (${step[`btn${selectedIndex}_label`]})`, "success");
+    
     setTimeout(() => {
-      if (currentIndex < exercises.length - 1) {
+      if (currentIndex < activities.length - 1) {
         currentIndex++;
         renderStep();
-        speakFinnish(exercises[currentIndex].prompt_fi, 0.95);
+        speakSuomi(activities[currentIndex].prompt_fi, 0.95);
       } else {
         showFeedback("Kaikki vaiheet suoritettu!", "success");
       }
@@ -170,7 +172,6 @@ function handleButtonPress(selectedIndex, btnEl, step) {
   } else {
     btnEl.classList.add("wrong");
     showFeedback("Väärä painike. Kuuntele ohje uudelleen.", "error");
-    speakSuomi(step.prompt_fi, 0.85);
   }
 }
 
