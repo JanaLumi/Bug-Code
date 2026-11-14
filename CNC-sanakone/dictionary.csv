@@ -9,3 +9,43 @@ coolant_on,jäähdytys päällä,coolant on,💧,coolant-on.svg,冷却开,冷却
 coolant_off,jäähdytys pois,coolant off,🚫,coolant-off.svg,冷却关,冷却液オフ,냉각수 끄기,𓏲,coolant_system|fluids
 axis_home,nollahakuesitys,axis homing,🎯,axis-home.svg,回原点,原点復帰,원점 복귀,𓆣,axis_motion|coordinates
 feed_rate,syöttönopeus,feed rate,⏩,feed-rate.svg,进给速度,送り速度,이송 속도,𓃭,spindle_control|motion
+x_axis_plus,x-akseli plus,x-axis positive,➡️,x-axis-plus.svg,X轴正向,X軸プラス,X축 플러스,𓄿,axis_motion|coordinates
+x_axis_minus,x-akseli miinus,x-axis negative,⬅️,x-axis-minus.svg,X轴负向,X軸マイナス,X축 마이너스,𓅀,axis_motion|coordinates
+y_axis_plus,y-akseli plus,y-axis positive,⬆️,y-axis-plus.svg,Y轴正向,Y軸プラス,Y축 플러스,𓅁,axis_motion|coordinates
+y_axis_minus,y-akseli miinus,y-axis negative,⬇️,y-axis-minus.svg,Y轴负向,Y軸マイナス,Y축 마이너스,𓅂,axis_motion|coordinates
+z_axis_plus,z-akseli plus,z-axis positive,🔼,z-axis-plus.svg,Z轴正向,Z軸プラス,Z축 플러스,𓅃,axis_motion|coordinates
+z_axis_minus,z-akseli miinus,z-axis negative,🔽,z-axis-minus.svg,Z轴负向,Z軸マイナス,Z축 마이너스,𓅄,axis_motion|coordinates
+rapid_traverse,pikaliike,rapid traverse,⚡,rapid-traverse.svg,快速移动,早送り,급속 이송,𓅅,axis_motion|motion
+jog_mode,käsiajo,jog mode,🕹️,jog-mode.svg,手动模式,ジョグ送り,조그 모드,𓅆,axis_motion|controls
+handwheel,käsipyörä,handwheel MPG,🎛️,handwheel.svg,手轮,ハンドル,핸드휠,𓅇,axis_motion|controls
+work_zero,työkappaleen nollapiste,workpiece zero,📍,work-zero.svg,工件原点,ワーク原点,공작물 원점,𓅈,coordinates|setup
+spindle_cw,kara myötäpäivään,spindle clockwise,↻,spindle-cw.svg,主轴正转,主軸正転,스핀들 정회전,𓅉,spindle_control|motion
+spindle_ccw,kara vastapäivään,spindle counter-clockwise,↺,spindle-ccw.svg,主轴反转,主軸逆転,스핀들 역회전,𓅊,spindle_control|motion
+spindle_speed,karan kierrosluku,spindle speed RPM,⏱️,spindle-speed.svg,主轴转速,主軸回転数,스핀들 회전수,𓅋,spindle_control|parameters
+spindle_orient,karan paikoitus,spindle orientation,🧭,spindle-orient.svg,主轴定向,主軸オリエント,스핀들 정위치,𓅌,spindle_control|tool_management
+spindle_override,karan ohitus,spindle override,🎚️,spindle-override.svg,主轴倍率,主軸オーバーライド,스핀들 오버라이드,𓅍,spindle_control|parameters
+feed_hold,syötön pito,feed hold,⏸️,feed-hold.svg,进给保持,送り一時停止,이송 일시정지,𓅎,motion|controls|safety
+feed_override,syötön ohitus,feed rate override,🎛️,feed-override.svg,进给倍率,送りオーバーライド,이송 오버라이드,𓅏,motion|parameters
+cycle_start,työkierto käyntiin,cycle start,🟢,cycle-start.svg,循环启动,サイクルスタート,사이클 시작,𓅐,program_execution|controls
+single_block,lause kerrallaan,single block,1️⃣,single-block.svg,单段执行,シングルブロック,싱글 블록,𓅑,program_execution|controls
+optional_stop,valinnainen pysäytys,optional stop M01,⏯️,optional-stop.svg,选择停止,オプショナルストップ,선택 정지,𓅒,program_execution|controls
+dry_run,kuiva-ajo,dry run,💨,dry-run.svg,空运行,ドライラン,드라이 런,𓅓,program_execution|setup
+block_delete,lauseen ohitus,block delete,⏭️,block-delete.svg,跳段,ブロックデリート,블록 삭제,𓅔,program_execution|parameters
+program_end,ohjelman loppu,program end M30,🏁,program-end.svg,程序结束,プログラム終了,프로그램 종료,𓅕,program_execution|controls
+tool_change,työkalun vaihto,tool change M06,🔁,tool-change.svg,换刀,工具交換,공구 교환,𓅖,tool_management|tooling
+tool_offset,työkalun korjaus,tool offset,📏,tool-offset.svg,刀具补偿,工具補正,공구 보정,𓅗,tool_management|parameters
+tool_length,työkalun pituus,tool length measurement,📐,tool-length.svg,刀长测量,工具長測定,공구 길이 측정,𓅘,tool_management|setup
+tool_magazine,työkalumakasiini,tool magazine,🎡,tool-magazine.svg,刀库,工具マガジン,공구 매거진,𓅙,tool_management|tooling
+end_mill,varsijyrsin,end mill,🔩,end-mill.svg,立铣刀,エンドミル,엔드밀,𓅚,tooling|setup
+face_mill,tasojyrsin,face mill,💿,face-mill.svg,面铣刀,フェイスミル,페이스밀,𓅛,tooling|setup
+tap_tool,kierretappi,tap tool,🪛,tap-tool.svg,丝锥,タップ,탭,𓅜,tooling|setup
+chuck_clamp,istukan kiinnitys,chuck clamp,🔒,chuck-clamp.svg,卡盘夹紧,チャッククランプ,척 클램프,𓅝,workholding|safety
+chuck_unclamp,istukan avaus,chuck unclamp,🔓,chuck-unclamp.svg,卡盘松开,チャックアンクランプ,척 언클램프,𓅞,workholding|setup
+tailstock_advance,kärkipylkkä eteen,tailstock advance,⏩,tailstock-advance.svg,尾座前进,心押台前進,심압대 전진,𓅟,workholding|motion
+tailstock_retract,kärkipylkkä taakse,tailstock retract,⏪,tailstock-retract.svg,尾座后退,心押台後退,심압대 후퇴,𓅠,workholding|motion
+door_lock,suojaoven lukitus,safety door lock,🚪,door-lock.svg,安全门锁,ドアロック,안전문 잠금,𓅡,emergency_safety|safety
+air_blast,paineilmapuhallus,air blast,🌬️,air-blast.svg,吹气,エアブロー,에어 블로우,𓅢,coolant_system|fluids
+chip_conveyor,lastukuljetin,chip conveyor,⛓️,chip-conveyor.svg,排屑器,チップコンベア,칩 컨베이어,𓅣,coolant_system|controls
+lubrication,voitelu,way lubrication,🛢️,lubrication.svg,润滑,潤滑,윤활,𓅤,coolant_system|fluids
+alarm_history,hälytyshistoria,alarm history,⚠️,alarm-history.svg,报警历史,アラーム履歴,알람 이력,𓅥,emergency_safety|diagnostics
+diagnostics,diagnostiikka,system diagnostics,🩺,diagnostics.svg,系统诊断,診断,진단,𓅦,diagnostics|parameters
