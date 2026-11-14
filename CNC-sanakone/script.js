@@ -128,21 +128,21 @@ function renderRound() {
     // Safety fallback: If both graphics and script are toggled off, force graphics on for this button
     const forceGraphics = !showGraphics && !showScript;
 
-    // Layer 1: Graphics / SVG with Emoji Fallback
+    // Layer 1: Graphics (SVG with explicit fallback to the emojis column)
     const visualSlot = document.createElement("div");
     visualSlot.className = "visual-slot";
     
-    const svgFileName = item.svg_file ? item.svg_file.trim() : "";
-    const fallbackEmoji = item.emojis || "🔘";
+    const svgFilename = item.svg ? item.svg.trim() : "";
+    const fallbackEmoji = item.emojis ? item.emojis.trim() : "🔘";
 
-    if (svgFileName) {
+    if (svgFilename) {
       const img = document.createElement("img");
-      img.src = `assets/${svgFileName}`;
+      img.src = `assets/${svgFilename}`;
       img.alt = item.suomi_transcript_en;
       img.width = 32;
       img.height = 32;
       
-      // If the SVG file doesn't exist in assets/, fall back to the row's emoji
+      // If the SVG file doesn't exist in assets/, fall back to the emoji column
       img.onerror = function() {
         visualSlot.textContent = fallbackEmoji;
       };
