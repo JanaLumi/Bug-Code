@@ -4,3 +4,7 @@ step_id,prompt_fi,prompt_en,target_btn,btn1_label,btn1_visual,btn2_label,btn2_vi
 3,"Aseta nollapiste ennen työstöä.","Set the zero point before machining.",3,"Syöttö","⏩","Kara","🌀","Nollapiste","🎯","Valo","💡"
 4,"Käynnistä jäähdytysneste.","Turn on the coolant.",4,"Pysäytä","⏹️","Tallenna","💾","Poistu","🚪","Jäähdytys","💧"
 5,"Aloita ohjelman ajo.","Start running the program.",1,"Käynnistä ajo","▶️","Tauko","⏸️","Muokkaa","✏️","Hätäseis","🛑"
+6,"Tarkista kappaleen kiinnitys ennen aloitusta.","Check the workpiece clamping before starting.",3,"Puhdista","🧹","Mittaa","📏","Kiristä","🔩","Vapauta","🔓"
+7,"Säädä karan pyörinitinopeus.","Adjust the spindle rotation speed.",1,"Kierrosluku","⚡","Syöttönopeus","⏩","Pysäytä","⏹️","Vaihda","🔄"
+8,"Aseta työkappaleen koordinaatit.","Set the workpiece coordinates.",4,"Nollaus","🎯","Siirrä","↔️","Tarkista","🔍","Koordinaatit","🗺️"
+9,"Vapauta hätäseis-painike.","Release the emergency stop button.",2,"Virta","🟢","Vapauta hätä","🔴","Käynnistä","▶️","Valmiustila","⏸️"
