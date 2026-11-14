@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Shank -->
+  <rect x="26" y="4" width="12" height="16" rx="2" fill="#1e293b"/>
+  <!-- Fluted Drill Body -->
+  <path d="M26 20 L38 20 L38 48 L32 60 L26 48 Z" fill="#0f172a"/>
+  <!-- Helical Flutes -->
+  <path d="M26 26 L38 32"/>
+  <path d="M26 34 L38 40"/>
+  <path d="M26 42 L38 48"/>
+</svg>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CNC Kuunteluharjoitus — Audio-First Interface</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Top Header & Constraint Toggles -->
+    <header class="top-bar">
+      <div class="brand">
+        <span class="status-dot"></span>
+        <h1>CNC-OHJAUS</h1>
+      </div>
+      <div class="controls-row">
+        <span id="step-counter" class="badge">Vaihe 1 / 1</span>
+        <button id="toggle-labels-btn" class="btn-ghost" type="button" title="Näytä tai piilota nappien tekstit">
+          👁️ Vain symbolit
+        </button>
+      </div>
+    </header>
+
+    <!-- Primary Audio Cue Card -->
+    <main class="terminal-body">
+      <section class="cue-panel">
+        <div class="audio-controls">
+          <button id="play-audio-btn" class="btn-primary" type="button">
+            🔊 Kuuntele ohje
+          </button>
+          <button id="slow-audio-btn" class="btn-secondary" type="button" title="Toista hitaammin">
+            🐢 Hidas
+          </button>
+        </div>
+
+        <!-- Transcript Accordion (Hidden by default to prevent visual matching) -->
+        <details id="transcript-accordion" class="accordion">
+          <summary>Näytä teksti (tarkista kuultu)</summary>
+          <div class="accordion-content">
+            <p id="prompt-fi" class="text-fi">Ladataan...</p>
+            <p id="prompt-en" class="text-en">Loading...</p>
+          </div>
+        </details>
+      </section>
+
+      <!-- Feedback Banner -->
+      <div id="feedback-bar" class="feedback-bar hidden" role="status"></div>
+
+      <!-- Constrained Button Grid -->
+      <section id="button-grid" class="button-grid" aria-label="Ohjauspainikkeet">
+        <!-- Populated dynamically from exercises.csv -->
+      </section>
+    </main>
+
+    <!-- Footer Navigation -->
+    <footer class="bottom-bar">
+      <button id="prev-step-btn" class="btn-ghost" type="button">← Edellinen</button>
+      <button id="reset-btn" class="btn-ghost" type="button">↺ Alusta</button>
+      <button id="next-step-btn" class="btn-ghost" type="button">Seuraava →</button>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

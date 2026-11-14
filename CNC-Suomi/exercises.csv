@@ -1,0 +1,6 @@
+step_id,prompt_fi,prompt_en,target_btn,btn1_label,btn1_visual,btn2_label,btn2_visual,btn3_label,btn3_visual,btn4_label,btn4_visual
+1,"Paina virtapainiketta ja käynnistä kone.","Press the power button and start the machine.",1,"Virta päälle","🟢","Asetukset","⚙️","Nollaus","🔄","Hätäseis","🛑"
+2,"Valitse poranterä työkaluvalikosta.","Select the drill bit from the tool menu.",2,"Jyrsin","🪚","Poranterä","assets/drill-bit.svg","Mittaus","📏","Jäähdytys","💧"
+3,"Aseta nollapiste ennen työstöä.","Set the zero point before machining.",3,"Syöttö","⏩","Kara","🌀","Nollapiste","🎯","Valo","💡"
+4,"Käynnistä jäähdytysneste.","Turn on the coolant.",4,"Pysäytä","⏹️","Tallenna","💾","Poistu","🚪","Jäähdytys","💧"
+5,"Aloita ohjelman ajo.","Start running the program.",1,"Käynnistä ajo","▶️","Tauko","⏸️","Muokkaa","✏️","Hätäseis","🛑"
