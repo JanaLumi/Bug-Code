@@ -26,15 +26,17 @@ const els = {
 
 // Parse simple CSV respecting quoted fields
 function parseCSV(text) {
-  const lines = text.trim().split(/\r?\n/);
+  const cleanText = text.replace(/^\uFEFF/, "");
+  const lines = cleanText.trim().split(/\r?\n/);
   if (lines.length < 2) return [];
-  const headers = splitCSVLine(lines[0]);
+  
+  const headers = splitCSVLine(lines[0]).map(h => h.trim().replace(/^"(.*)"$/, '$1'));
 
   return lines.slice(1).map((line) => {
     const values = splitCSVLine(line);
     const row = {};
     headers.forEach((h, i) => {
-      row[h.trim()] = (values[i] || "").trim();
+      row[h] = (values[i] || "").trim().replace(/^"(.*)"$/, '$1');
     });
     return row;
   });
