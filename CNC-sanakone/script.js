@@ -128,10 +128,22 @@ function renderRound() {
     // Safety fallback: If both graphics and script are toggled off, force graphics on for this button
     const forceGraphics = !showGraphics && !showScript;
 
-    // Layer 1: Graphics / Emoji
+    // Layer 1: Graphics / SVG Asset
     const visualSlot = document.createElement("div");
     visualSlot.className = "visual-slot";
-    visualSlot.textContent = item.emojis || "🔘";
+    
+    const graphicValue = item.emojis || "";
+    if (graphicValue.endsWith(".svg")) {
+      const img = document.createElement("img");
+      img.src = `assets/${graphicValue}`;
+      img.alt = item.suomi_transcript_en;
+      img.width = 32;
+      img.height = 32;
+      visualSlot.appendChild(img);
+    } else {
+      visualSlot.textContent = graphicValue || "🔘";
+    }
+
     if (!showGraphics && !forceGraphics) {
       visualSlot.classList.add("hidden-layer");
     }
