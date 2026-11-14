@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CNC Constraint Trainer — Generative Lexicon</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="trainer-container">
+    
+    <!-- Top Control Deck: Script Selector & Layer Toggles -->
+    <header class="top-deck">
+      <div class="deck-row">
+        <span id="step-counter" class="step-counter">Ladataan...</span>
+        <div class="toggles-group">
+          <button id="toggle-graphics-btn" class="btn-toggle active" type="button">🖼️ Grafiikat</button>
+          <select id="script-select" class="script-select" aria-label="Valitse kirjoitusjärjestelmä">
+            <option value="mandarin">🇨🇳 Mandarin (中文)</option>
+            <option value="japanese">🇯🇵 Japanese (日本語)</option>
+            <option value="korean">🇰🇷 Korean (한국어)</option>
+            <option value="hieroglyphics">🪶 Hieroglyphics</option>
+          </select>
+          <button id="toggle-script-btn" class="btn-toggle active" type="button">✍️ Skripti</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Audio & Prompt Station -->
+    <main class="main-stage">
+      <div class="audio-controls">
+        <button id="play-audio-btn" class="btn-audio primary" type="button">
+          🔊 Kuuntele Suomeksi
+        </button>
+        <button id="slow-audio-btn" class="btn-audio secondary" type="button">
+          🐢 Hitaasti
+        </button>
+      </div>
+
+      <!-- Feedback / Status Bar -->
+      <div id="feedback-bar" class="feedback-bar hidden" role="status"></div>
+
+      <!-- 4-Button Micro-Interface Grid -->
+      <div id="button-grid" class="button-grid">
+        <!-- Dynamically populated -->
+      </div>
+    </main>
+
+    <!-- Footer / Transcript Accordion & Reset -->
+    <footer class="bottom-bar">
+      <details id="transcript-accordion" class="transcript-accordion">
+        <summary>Näytä transkriptio (Suomi / En)</summary>
+        <div class="transcript-content">
+          <p id="prompt-fi" class="prompt-text">...</p>
+          <p id="prompt-en" class="prompt-subtext">...</p>
+        </div>
+      </details>
+      <button id="reset-btn" class="btn-ghost" type="button">↺ Uusi kierros</button>
+    </footer>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
