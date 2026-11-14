@@ -5,7 +5,7 @@
  * inside the same `visual` column.
  */
 
-let exercises = [];
+let activities = [];
 let currentIndex = 0;
 let showButtonLabels = false;
 
@@ -114,7 +114,7 @@ function renderStep() {
   els.accordion.removeAttribute("open");
   hideFeedback();
 
-  els.stepCounter.textContent = `Vaihe ${currentIndex + 1} / ${exercises.length}`;
+  els.stepCounter.textContent = `Vaihe ${currentIndex + 1} / ${activities.length}`;
   els.promptFi.textContent = step.prompt_fi;
   els.promptEn.textContent = step.prompt_en;
 
@@ -154,10 +154,10 @@ function handleButtonPress(selectedIndex, btnEl, step) {
     btnEl.classList.add("correct");
     showFeedback(`Oikein! (${step[`btn${selectedIndex}_label`]})`, "success");
     setTimeout(() => {
-      if (currentIndex < exercises.length - 1) {
+      if (currentIndex < activities.length - 1) {
         currentIndex++;
         renderStep();
-        speakFinnish(exercises[currentIndex].prompt_fi, 0.95);
+        speakFinnish(activities[currentIndex].prompt_fi, 0.95);
       } else {
         showFeedback("Kaikki vaiheet suoritettu!", "success");
       }
@@ -171,24 +171,24 @@ function handleButtonPress(selectedIndex, btnEl, step) {
 
 async function init() {
   try {
-    const response = await fetch("exercises.csv", { cache: "no-store" });
-    if (!response.ok) throw new Error("exercises.csv ei löytynyt");
+    const response = await fetch("activities.csv", { cache: "no-store" });
+    if (!response.ok) throw new Error("activities.csv ei löytynyt");
     const csvText = await response.text();
     exercises = parseCSV(csvText);
     renderStep();
   } catch (err) {
-    showFeedback("Virhe ladattaessa exercises.csv-tiedostoa. Varmista että ajat sivua palvelimelta (esim. GitHub Pages).", "error");
+    showFeedback("Virhe ladattaessa activities.csv-tiedostoa. Varmista että ajat sivua palvelimelta (esim. GitHub Pages).", "error");
     console.error(err);
   }
 }
 
 // Event Listeners
 els.playAudioBtn.addEventListener("click", () => {
-  if (exercises[currentIndex]) speakFinnish(exercises[currentIndex].prompt_fi, 0.95);
+  if (activities[currentIndex]) speakFinnish(activities[currentIndex].prompt_fi, 0.95);
 });
 
 els.slowAudioBtn.addEventListener("click", () => {
-  if (exercises[currentIndex]) speakFinnish(exercises[currentIndex].prompt_fi, 0.72);
+  if (activities[currentIndex]) speakFinnish(activities[currentIndex].prompt_fi, 0.72);
 });
 
 els.toggleLabelsBtn.addEventListener("click", () => {
@@ -207,7 +207,7 @@ els.prevStepBtn.addEventListener("click", () => {
 });
 
 els.nextStepBtn.addEventListener("click", () => {
-  if (currentIndex < exercises.length - 1) {
+  if (currentIndex < activities.length - 1) {
     currentIndex++;
     renderStep();
   }
