@@ -1,6 +1,6 @@
 /**
  * CNC Audio-First Constraint Trainer
- * Reads exercises.csv from the same repository directory.
+ * Reads activities.csv from the same repository directory.
  * Supports both emojis (e.g., "⚙️") and custom image/SVG paths (e.g., "assets/drill-bit.svg")
  * inside the same `visual` column.
  */
@@ -107,8 +107,8 @@ function hideFeedback() {
 }
 
 function renderStep() {
-  if (!exercises.length) return;
-  const step = exercises[currentIndex];
+  if (!activities.length) return;
+  const step = activities[currentIndex];
 
   // Collapse transcript accordion on every new step so listening comes first
   els.accordion.removeAttribute("open");
@@ -174,7 +174,7 @@ async function init() {
     const response = await fetch("activities.csv", { cache: "no-store" });
     if (!response.ok) throw new Error("activities.csv ei löytynyt");
     const csvText = await response.text();
-    exercises = parseCSV(csvText);
+    activities = parseCSV(csvText);
     renderStep();
   } catch (err) {
     showFeedback("Virhe ladattaessa activities.csv-tiedostoa. Varmista että ajat sivua palvelimelta (esim. GitHub Pages).", "error");
