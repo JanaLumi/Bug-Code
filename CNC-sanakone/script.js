@@ -128,26 +128,28 @@ function renderRound() {
     // Safety fallback: If both graphics and script are toggled off, force graphics on for this button
     const forceGraphics = !showGraphics && !showScript;
 
-    // Layer 1: Graphics / SVG Asset with Fallback
+    // Layer 1: Graphics / SVG with Emoji Fallback
     const visualSlot = document.createElement("div");
     visualSlot.className = "visual-slot";
     
-    const graphicValue = item.emojis || "";
-    if (graphicValue.endsWith(".svg")) {
+    const svgFileName = item.svg_file ? item.svg_file.trim() : "";
+    const fallbackEmoji = item.emojis || "🔘";
+
+    if (svgFileName) {
       const img = document.createElement("img");
-      img.src = `assets/${graphicValue}`;
+      img.src = `assets/${svgFileName}`;
       img.alt = item.suomi_transcript_en;
       img.width = 32;
       img.height = 32;
       
-      // If the SVG file doesn't exist yet, fall back gracefully to a generic icon
+      // If the SVG file doesn't exist in assets/, fall back to the row's emoji
       img.onerror = function() {
-        visualSlot.textContent = "🔘";
+        visualSlot.textContent = fallbackEmoji;
       };
       
       visualSlot.appendChild(img);
     } else {
-      visualSlot.textContent = graphicValue || "🔘";
+      visualSlot.textContent = fallbackEmoji;
     }
 
     if (!showGraphics && !forceGraphics) {
