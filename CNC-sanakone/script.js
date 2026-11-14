@@ -128,7 +128,7 @@ function renderRound() {
     // Safety fallback: If both graphics and script are toggled off, force graphics on for this button
     const forceGraphics = !showGraphics && !showScript;
 
-    // Layer 1: Graphics / SVG Asset
+    // Layer 1: Graphics / SVG Asset with Fallback
     const visualSlot = document.createElement("div");
     visualSlot.className = "visual-slot";
     
@@ -139,6 +139,12 @@ function renderRound() {
       img.alt = item.suomi_transcript_en;
       img.width = 32;
       img.height = 32;
+      
+      // If the SVG file doesn't exist yet, fall back gracefully to a generic icon
+      img.onerror = function() {
+        visualSlot.textContent = "🔘";
+      };
+      
       visualSlot.appendChild(img);
     } else {
       visualSlot.textContent = graphicValue || "🔘";
