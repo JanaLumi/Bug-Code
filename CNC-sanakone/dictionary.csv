@@ -1,11 +1,11 @@
 term_id,suomi_audio,suomi_transcript_en,emojis,mandarin,japanese,korean,hieroglyphics,tags
-spindle_start,kara käyntiin,start spindle,spindle-start.svg,启动,回転開始,스핀들 시작,𓏞,spindle_control|controls
-spindle_stop,kara pysähdys,stop spindle,spindle-stop.svg,停止,回転停止,스핀들 정지,𓃠,spindle_control|controls|safety
-drill_bit,poranterä,drill bit,drill-bit.svg,钻头,ドリルビット,드릴 비트,𓋹,tool_management|tooling
-milling_cutter,jyrsin,milling cutter,milling-cutter.svg,铣刀,フライスカッター,밀링 커터,𓂧,tool_management|tooling
-emergency_stop,hätäseis,emergency stop,emergency-stop.svg,紧急停止,非常停止,비상 정지,𓊪,emergency_safety|safety
-reset,nollaus,reset,reset.svg,复位,リセット,리셋,𓍝,emergency_safety|controls
-coolant_on,jäähdytys päällä,coolant on,coolant-on.svg,冷却开,冷却液オン,냉각수 켜기,𓈖,coolant_system|fluids
-coolant_off,jäähdytys pois,coolant off,coolant-off.svg,冷却关,冷却液オフ,냉각수 끄기,𓏲,coolant_system|fluids
-axis_home,nollahakuesitys,axis homing,axis-home.svg,回原点,原点復帰,원점 복귀,𓆣,axis_motion|coordinates
-feed_rate,syöttönopeus,feed rate,feed-rate.svg,进给速度,送り速度,이송 속도,𓃭,spindle_control|motion
+spindle_start,kara käyntiin,start spindle,▶️,启动,回転開始,스핀들 시작,𓏞,spindle_control|controls
+spindle_stop,kara pysähdys,stop spindle,⏹️,停止,回転停止,스핀들 정지,𓃠,spindle_control|controls|safety
+drill_bit,poranterä,drill bit,🪚,钻头,ドリルビット,드릴 비트,𓋹,tool_management|tooling
+milling_cutter,jyrsin,milling cutter,⚙️,铣刀,フライスカッター,밀링 커터,𓂧,tool_management|tooling
+emergency_stop,hätäseis,emergency stop,🛑,紧急停止,非常停止,비상 정지,𓊪,emergency_safety|safety
+reset,nollaus,reset,🔄,复位,リセット,리셋,𓍝,emergency_safety|controls
+coolant_on,jäähdytys päällä,coolant on,💧,冷却开,冷却液オン,냉각수 켜기,𓈖,coolant_system|fluids
+coolant_off,jäähdytys pois,coolant off,🚫,冷却关,冷却液オフ,냉각수 끄기,𓏲,coolant_system|fluids
+axis_home,nollahakuesitys,axis homing,🎯,回原点,原点復帰,원점 복귀,𓆣,axis_motion|coordinates
+feed_rate,syöttönopeus,feed rate,⏩,进给速度,送り速度,이송 속도,𓃭,spindle_control|motion
