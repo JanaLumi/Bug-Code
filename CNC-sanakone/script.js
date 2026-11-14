@@ -114,7 +114,7 @@ function renderRound() {
   els.accordion.removeAttribute("open");
   hideFeedback();
 
-  els.stepCounter.textContent = `Generatiivinen tila • Kohde: ${currentTargetItem.suomi_audio}`;
+//  els.stepCounter.textContent = `Generatiivinen tila • Kohde: ${currentTargetItem.suomi_audio}`;
   els.promptFi.textContent = currentTargetItem.suomi_audio;
   els.promptEn.textContent = currentTargetItem.suomi_transcript_en;
 
